@@ -158,12 +158,15 @@ let complex = [
 
 let complexShort = [
   // **SHORTCUTS**
+  // * Universal shortcuts
   // undo
   {from: [[COMMAND, SHIFT], 'm'], to: [[COMMAND, SHIFT], 'slash']},
   {from: [COMMAND, 'm'], to: [COMMAND, 'slash']},
   // close
   {from: [COMMAND, 'c'], to: [COMMAND, 'comma']},
   {from: [MOD2, 'c'], to: [COMMAND, 'comma']},
+  // preferences/settings
+  {from: [MOD2, 'a'], to: [COMMAND, 'w']},
   // escape
   {from: [COMMAND, 'x'], to: 'escape'},
   // extend selection
@@ -174,6 +177,17 @@ let complexShort = [
   {from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
   // comment with line comment
   {from: [COMMAND, 'comma'], to: [COMMAND, 'keypad_slash']},
+
+  // * Utility shortcuts
+  // delete whole word
+  {from: [MOD1, LCOMMAND], to: [OPTION, DELETE]},
+  // delete whole line
+  {from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
+  // go to beggining of line
+  {from: [MOD1.keys.concat(COMMAND), 's'], to: [COMMAND, LEFT]},
+  // go to end of line
+  {from: [MOD1.keys.concat(COMMAND), 'f'], to: [COMMAND, RIGHT]},
+
 
   // **IDE SPECIFIC**
   // *Intellij*
@@ -248,9 +262,10 @@ let complexShort = [
   // intellij - solve problem lightbulb
   {from: [MOD1, 'open_bracket'], to: [OPTION, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
+  {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
+  ['grave_accent_and_tilde', SHIFT],
   ['open_bracket', ENTER],
   ['close_bracket', ENTER],
-  ['grave_accent_and_tilde', LSHIFT],
   [LCOMMAND, DELETE],
   ['q', TAB],
   {from: TAB, to: [LSHIFT, TAB]},
