@@ -8,14 +8,23 @@ let configPath = `${os.homedir()}/.config/karabiner/karabiner.json`
 
 const ENTER = 'return_or_enter'
 const DELETE = 'delete_or_backspace'
+const TAB = 'tab'
 
 const LSHIFT = 'left_shift'
+const SHIFT = LSHIFT
 
 const LCONTROL = 'left_control'
 
+const LCOMMAND = 'left_command'
 const COMMAND = 'right_command'
 
 const LOPTION = 'left_option'
+const OPTION = LOPTION
+
+const UP = 'up_arrow'
+const DOWN = 'down_arrow'
+const LEFT = 'left_arrow'
+const RIGHT = 'right_arrow'
 
 const mod1base = LSHIFT
 const mod1mods = [
@@ -89,30 +98,99 @@ let complexShort = [
   {from: [MOD2, 'c'], to: [COMMAND, 'comma']},
   // escape
   {from: [COMMAND, 'x'], to: 'escape'},
+  // extend selection
+  {from: [COMMAND, 'w'], to: [OPTION, UP]},
+  // move line up
+  {from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
+  // move line down
+  {from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
+  // comment with line comment
+  {from: [COMMAND, 'comma'], to: [COMMAND, 'keypad_slash']},
 
   // **IDE SPECIFIC**
   // *Intellij*
 
   // **MOD1 LAYER
-  {from: [MOD1, 'l'], to: 'close_bracket'},
+  {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
   {from: [MOD1, 'w'], to: 'z'},
   {from: [MOD1, 'r'], to: 'hyphen'},
   {from: [MOD1, 't'], to: 'equal_sign'},
+  {from: [MOD1, 'a'], to: [SHIFT, '2']},
+
+  {from: [MOD1, 'g'], to: [SHIFT, 'quote']},
+
+  {from: [MOD1, 'z'], to: [SHIFT, '4']},
+  {from: [MOD1, 'x'], to: [SHIFT, '1']},
+  {from: [MOD1, 'c'], to: [SHIFT, 'open_bracket']},
   {from: [MOD1, 'v'], to: 'q'},
+  {from: [MOD1, 'b'], to: [SHIFT, '7']},
+
+  {from: [MOD1, 'y'], to: [SHIFT, '5']},
+  {from: [MOD1, 'u'], to: [SHIFT, 'equal_sign']},
+  {from: [MOD1, 'i'], to: [SHIFT, '0']},
+  {from: [MOD1, 'o'], to: [SHIFT, 'q']},
+  {from: [MOD1, 'p'], to: [SHIFT, 'close_bracket']},
+
+  {from: [MOD1, 'h'], to: [SHIFT, 'z']},
+  {from: [MOD1, 'j'], to: [SHIFT, 'hyphen']},
+  {from: [MOD1, 'k'], to: [SHIFT, '9']},
+  {from: [MOD1, 'l'], to: 'close_bracket'},
+  {from: [MOD1, 'semicolon'], to: 'quote'},
+
+  {from: [MOD1, 'n'], to: [SHIFT, '8']},
+  {from: [MOD1, 'm'], to: 'open_bracket'},
+  {from: [MOD1, 'comma'], to: [SHIFT, 'w']},
+  {from: [MOD1, 'period'], to: [SHIFT, 'e']},
+
 
   // simple arrows
-  {from: [MOD2, 'e'], to: 'up_arrow'},
-  {from: [MOD2, 's'], to: 'left_arrow'},
-  {from: [MOD2, 'd'], to: 'down_arrow'},
-  {from: [MOD2, 'f'], to: 'right_arrow'},
+  {from: [MOD2, 'e'], to: UP},
+  {from: [MOD2, 's'], to: LEFT},
+  {from: [MOD2, 'd'], to: DOWN},
+  {from: [MOD2, 'f'], to: RIGHT},
+
 
   // navigate desktops
-  {from: [MOD2, 'w'], to: [LCONTROL, 'left_arrow']},
-  {from: [MOD2, 'r'], to: [LCONTROL, 'right_arrow']},
+  {from: [MOD2, 'w'], to: [LCONTROL, LEFT]},
+  {from: [MOD2, 'r'], to: [LCONTROL, RIGHT]},
+
+
+  // **Surroundings**
+  ['open_bracket', ENTER],
+  {from: [MOD1, 'close_bracket'], to: [OPTION, ENTER]},
+  ['close_bracket', ENTER],
+  ['grave_accent_and_tilde', LSHIFT],
+  [LCOMMAND, DELETE],
+  ['q', TAB],
+  {from: TAB, to: [LSHIFT, TAB]},
+
+  // **SWAPS**
+  ['z', 'b'],
+  ['b', 'slash'],
 ]
 
 for (let rule of complexShort) {
-  let [fromMod, from] = rule.from
+  if (Array.isArray(rule)) {
+    let [from, to] = rule
+    superdvorakBase.complex_modifications.rules.push({
+      manipulators: [
+        {
+          description: `${from} => ${to}`,
+          from: {key_code: from},
+          to: [{key_code: to}],
+          type: 'basic'
+        }
+      ]
+    })
+    continue
+  }
+  let from, fromMod = {}
+  if (isString(rule.from)) {
+    from = rule.from
+  }
+  else {
+    [fromMod, from] = rule.from
+  }
   let to, toMod
   if (isString(rule.to)) {
     to = rule.to
@@ -123,7 +201,7 @@ for (let rule of complexShort) {
   superdvorakBase.complex_modifications.rules.push({
       manipulators: [
         {
-          description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ': ''}${to}`,
+          description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ' : ''}${to}`,
           from: {
             key_code: from,
             modifiers: {
@@ -226,17 +304,7 @@ let a = {
   ]
 }
 
-let simpleShort = [
-  // **Surroundings**
-  ['open_bracket', ENTER],
-  ['close_bracket', ENTER],
-  ['grave_accent_and_tilde', LSHIFT],
-
-  ['left_command', DELETE],
-  ['q', 'tab'],
-  ['z', 'b'],
-  ['b', 'slash'],
-]
+let simpleShort = []
 
 let simple = []
 
