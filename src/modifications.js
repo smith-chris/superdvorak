@@ -10,16 +10,21 @@ const ENTER = 'return_or_enter'
 const DELETE = 'delete_or_backspace'
 const TAB = 'tab'
 
+const RSHIFT = 'right_shift'
 const LSHIFT = 'left_shift'
 const SHIFT = LSHIFT
 
 const LCONTROL = 'left_control'
 
 const LCOMMAND = 'left_command'
-const COMMAND = 'right_command'
+const RCOMMAND = 'right_command'
+const COMMAND = RCOMMAND
 
+const ROPTION = 'right_option'
 const LOPTION = 'left_option'
 const OPTION = LOPTION
+
+const FN = 'fn'
 
 const UP = 'up_arrow'
 const DOWN = 'down_arrow'
@@ -28,8 +33,9 @@ const RIGHT = 'right_arrow'
 
 const mod1base = LSHIFT
 const mod1mods = [
-  'left_command',
-  'left_option'
+  LCOMMAND,
+  LOPTION,
+  FN
 ]
 
 const MOD1 = {
@@ -40,6 +46,23 @@ const MOD1 = {
 const MOD2 = {
   name: 'MOD2',
   keys: ['left_option']
+}
+
+const CMD_MOD2 = {
+  name: 'command + MOD2',
+  keys: MOD2.keys.concat(COMMAND)
+}
+
+const mod3base = RSHIFT
+const mod3mods = [
+  ROPTION,
+  RCOMMAND,
+  FN
+]
+
+const MOD3 = {
+  name: mod3base,
+  keys: mod3mods.concat([mod3base])
 }
 
 let complex = [
@@ -68,7 +91,7 @@ let complex = [
   {
     manipulators: [
       {
-        description: 'Change caps_lock to command+option+shift.',
+        description: 'Change caps_lock to control+command+option.',
         from: {
           key_code: 'quote',
           modifiers: {
@@ -81,6 +104,50 @@ let complex = [
           {
             key_code: mod1base,
             modifiers: mod1mods
+          }
+        ],
+        type: 'basic'
+      }
+    ]
+  },
+  {
+    manipulators: [
+      {
+        description: 'Change caps_lock to control+command+option.',
+        from: {
+          key_code: 'backslash',
+          modifiers: {
+            optional: [
+              'any'
+            ]
+          }
+        },
+        to: [
+          {
+            key_code: mod1base,
+            modifiers: mod1mods
+          }
+        ],
+        type: 'basic'
+      }
+    ]
+  },
+  {
+    manipulators: [
+      {
+        description: 'Change right option to command+option+shift.',
+        from: {
+          key_code: ROPTION,
+          modifiers: {
+            optional: [
+              'any'
+            ]
+          }
+        },
+        to: [
+          {
+            key_code: mod3base,
+            modifiers: mod3mods
           }
         ],
         type: 'basic'
@@ -109,8 +176,11 @@ let complexShort = [
 
   // **IDE SPECIFIC**
   // *Intellij*
+  // open terminal
+  {from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
+  {from: [CMD_MOD2, 'k'], to: [[OPTION, FN], 'f12']},
 
-  // **MOD1 LAYER
+  // **MOD1 LAYER**
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
   {from: [MOD1, 'w'], to: 'z'},
   {from: [MOD1, 'r'], to: 'hyphen'},
@@ -141,6 +211,24 @@ let complexShort = [
   {from: [MOD1, 'm'], to: 'open_bracket'},
   {from: [MOD1, 'comma'], to: [SHIFT, 'w']},
   {from: [MOD1, 'period'], to: [SHIFT, 'e']},
+
+
+  // **MOD2 LAYER**
+  {from: [MOD2, 'y'], to: [SHIFT, 'grave_accent_and_tilde']},
+  {from: [MOD2, 't'], to: 'f2'},
+  {from: [MOD2, 'h'], to: '0'},
+  {from: [MOD2, 'u'], to: '1'},
+  {from: [MOD2, 'j'], to: '2'},
+  {from: [MOD2, 'i'], to: '3'},
+  {from: [MOD2, 'k'], to: '4'},
+  {from: [MOD2, 'o'], to: '5'},
+  {from: [MOD2, 'l'], to: '6'},
+  {from: [MOD2, 'p'], to: '7'},
+  {from: [MOD2, 'semicolon'], to: '8'},
+  {from: [MOD2, 'n'], to: [SHIFT, '3']},
+  {from: [MOD2, 'm'], to: '9'},
+  {from: [MOD2, 'comma'], to: 'backslash'},
+  {from: [MOD2, 'period'], to: [SHIFT, '6']},
 
 
   // simple arrows
