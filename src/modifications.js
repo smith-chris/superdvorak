@@ -12,7 +12,7 @@ const TAB = 'tab'
 
 const RSHIFT = 'right_shift'
 const LSHIFT = 'left_shift'
-const SHIFT = LSHIFT
+const SHIFT = RSHIFT
 
 const LCONTROL = 'left_control'
 
@@ -159,6 +159,7 @@ let complex = [
 let complexShort = [
   // **SHORTCUTS**
   // undo
+  {from: [[COMMAND, SHIFT], 'm'], to: [[COMMAND, SHIFT], 'slash']},
   {from: [COMMAND, 'm'], to: [COMMAND, 'slash']},
   // close
   {from: [COMMAND, 'c'], to: [COMMAND, 'comma']},
@@ -244,16 +245,23 @@ let complexShort = [
 
 
   // **Surroundings**
+  // intellij - solve problem lightbulb
+  {from: [MOD1, 'open_bracket'], to: [OPTION, ENTER]},
+  {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
   ['open_bracket', ENTER],
-  {from: [MOD1, 'close_bracket'], to: [OPTION, ENTER]},
   ['close_bracket', ENTER],
   ['grave_accent_and_tilde', LSHIFT],
   [LCOMMAND, DELETE],
   ['q', TAB],
   {from: TAB, to: [LSHIFT, TAB]},
+  ['slash', SHIFT],
+
+  // always right shift is pressed
+  [LSHIFT, SHIFT],
 
   // **SWAPS**
   ['z', 'b'],
+  {from: [SHIFT, 'z'], to: [SHIFT, 'b']},
   ['b', 'slash'],
 ]
 
@@ -293,7 +301,7 @@ for (let rule of complexShort) {
           from: {
             key_code: from,
             modifiers: {
-              mandatory: isString(fromMod) ? fromMod : fromMod.keys
+              mandatory: fromMod.hasOwnProperty('keys') ? fromMod.keys : fromMod
             }
           },
           to: [
