@@ -2,7 +2,7 @@ const os = require('os')
 const fs = require('fs')
 const karabinerBase = require('./karabinerBase')
 const superdvorakBase = require('./superdvorakBase')
-const {isString} = require('./utils')
+const {isString, isObject} = require('./utils')
 
 let configPath = `${os.homedir()}/.config/karabiner/karabiner.json`
 
@@ -184,9 +184,9 @@ let complexShort = [
   // delete whole line
   {from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
   // go to beggining of line
-  {from: [MOD1.keys.concat(COMMAND), 's'], to: [COMMAND, LEFT]},
+  {from: [[MOD1, COMMAND], 's'], to: [COMMAND, LEFT]},
   // go to end of line
-  {from: [MOD1.keys.concat(COMMAND), 'f'], to: [COMMAND, RIGHT]},
+  {from: [[MOD1, COMMAND], 'f'], to: [COMMAND, RIGHT]},
 
 
   // **IDE SPECIFIC**
@@ -280,6 +280,18 @@ let complexShort = [
   ['b', 'slash'],
 ]
 
+let findDuplicates = array => {
+  let uniq = array
+    .map(name => ({count: 1, name}))
+    .reduce((a, b) => {
+        a[b.name] = (a[b.name] || 0) + b.count
+        return a
+      }, {}
+    )
+
+  return Object.keys(uniq).filter((a) => uniq[a] > 1)
+}
+
 for (let rule of complexShort) {
   if (Array.isArray(rule)) {
     let [from, to] = rule
@@ -301,6 +313,26 @@ for (let rule of complexShort) {
   }
   else {
     [fromMod, from] = rule.from
+    if (Array.isArray(fromMod) && fromMod.length > 1 && fromMod.filter(isObject).length > 0) {
+      // In case of use MODX and regular mods at the same time as fromMods
+      let newFromMod = []
+      for (let mod of fromMod) {
+        if (mod.hasOwnProperty('keys')) {
+          newFromMod = newFromMod.concat(mod.keys)
+        }
+        else if (isString(mod)) {
+          newFromMod.push(mod)
+        }
+        else {
+          throw new Error(`Unknown mod type: ${mod}`)
+        }
+      }
+      let duplicates = findDuplicates(newFromMod)
+      if (duplicates.length > 0) {
+        throw new Error(`Duplicate modifiers in from: ${JSON.stringify(fromMod)}`)
+      }
+      fromMod = newFromMod
+    }
   }
   let to, toMod
   if (isString(rule.to)) {
