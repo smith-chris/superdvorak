@@ -1,0 +1,13 @@
+{
+  "name": "superdvorak-keyboard-layout",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/modifications.js"
+  },
+  "author": "Krzysztof Kowalski",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^1.12.5"
+  }
+}
