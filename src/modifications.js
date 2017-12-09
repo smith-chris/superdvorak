@@ -15,7 +15,8 @@ const LSHIFT = 'left_shift'
 const SHIFT = RSHIFT
 
 const LCONTROL = 'left_control'
-const CONTROL = LCONTROL
+const RCONTROL = 'right_control'
+const CONTROL = RCONTROL
 
 const LCOMMAND = 'left_command'
 const RCOMMAND = 'right_command'
@@ -46,7 +47,7 @@ const MOD1 = {
 
 const MOD2 = {
   name: 'MOD2',
-  keys: ['left_option']
+  keys: [LOPTION]
 }
 
 const mod3base = COMMAND
@@ -72,6 +73,12 @@ const CHROME = {
   ]
 }
 
+const ATOM = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.github\\.atom',
+  ]
+}
 
 let complex = [
   {
@@ -210,6 +217,17 @@ let complexShort = [
   {when: INTELLIJ, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
   // CHROME - open terminal/inspector
   {when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c']},
+  // **ATOM**
+  // open terminal
+  {when: ATOM, from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
+  // file search
+  {when: ATOM, from: [COMMAND, 'l'], to: [COMMAND, 'r']},
+  // duplicate line
+  {when: ATOM, from: [COMMAND, 'h'], to: [[COMMAND, SHIFT], 'h']},
+  // move line up
+  {when: ATOM, from: [COMMAND, 'e'], to: [[COMMAND, CONTROL], UP]},
+  // move line down
+  {when: ATOM, from: [COMMAND, 'd'], to: [[COMMAND, CONTROL], DOWN]},
 
   // **MOD1 LAYER**
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
@@ -317,10 +335,10 @@ let findDuplicates = array => {
   return Object.keys(uniq).filter((a) => uniq[a] > 1)
 }
 
-for (let rule of complexShort) {
+let transformRule = rule => {
   if (Array.isArray(rule)) {
     let [from, to] = rule
-    superdvorakBase.complex_modifications.rules.push({
+    return {
       manipulators: [
         {
           description: `${from} => ${to}`,
@@ -329,8 +347,7 @@ for (let rule of complexShort) {
           type: 'basic'
         }
       ]
-    })
-    continue
+    }
   }
   let from, fromMod = {}
   if (isString(rule.from)) {
@@ -368,7 +385,7 @@ for (let rule of complexShort) {
   }
   let when = rule.when
   when = when ? (Array.isArray(when) ? when : [when]) : undefined
-  superdvorakBase.complex_modifications.rules.push({
+  return {
       manipulators: [
         {
           description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ' : ''}${to}`,
@@ -389,7 +406,17 @@ for (let rule of complexShort) {
         }
       ]
     }
-  )
+
+}
+
+for (let rule of complexShort) {
+  let ruleTransformed = transformRule(rule)
+  if (rule.debug) {
+    console.log('----')
+    console.log(rule)
+    console.log(ruleTransformed)
+  }
+  superdvorakBase.complex_modifications.rules.push(ruleTransformed)
 }
 
 
@@ -475,28 +502,8 @@ let a = {
   ]
 }
 
-let simpleShort = []
-
-let simple = []
-
 for (let rule of complex) {
   superdvorakBase.complex_modifications.rules.push(rule)
-}
-
-for (let rule of simple) {
-  superdvorakBase.simple_modifications.push(rule)
-}
-
-for (let rule of simpleShort) {
-  let [from, to] = rule
-  superdvorakBase.simple_modifications.push({
-    from: {
-      key_code: from
-    },
-    to: {
-      key_code: to
-    }
-  })
 }
 
 karabinerBase.profiles.push(superdvorakBase)
