@@ -15,6 +15,7 @@ const LSHIFT = 'left_shift'
 const SHIFT = RSHIFT
 
 const LCONTROL = 'left_control'
+const CONTROL = LCONTROL
 
 const LCOMMAND = 'left_command'
 const RCOMMAND = 'right_command'
@@ -64,6 +65,22 @@ const MOD3 = {
   name: mod3base,
   keys: mod3mods.concat([mod3base])
 }
+
+// CONDITIONS
+const INTELLIJ = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.jetbrains\\.pycharm$',
+  ]
+}
+
+const CHROME = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.google\\.Chrome$',
+  ]
+}
+
 
 let complex = [
   {
@@ -169,12 +186,9 @@ let complexShort = [
   {from: [MOD2, 'a'], to: [COMMAND, 'w']},
   // escape
   {from: [COMMAND, 'x'], to: 'escape'},
-  // extend selection
-  {from: [COMMAND, 'w'], to: [OPTION, UP]},
-  // move line up
-  {from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
-  // move line down
-  {from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
+  // cut
+  {from: [COMMAND, 'n'], to: [COMMAND, 'b']},
+
   // comment with line comment
   {from: [COMMAND, 'comma'], to: [COMMAND, 'keypad_slash']},
 
@@ -187,13 +201,26 @@ let complexShort = [
   {from: [[MOD1, COMMAND], 's'], to: [COMMAND, LEFT]},
   // go to end of line
   {from: [[MOD1, COMMAND], 'f'], to: [COMMAND, RIGHT]},
+  // switcher/traverse chrome tabs
+  {from: [COMMAND, 'j'], to: [CONTROL, TAB]},
+  {from: [MOD3, 'j'], to: [[CONTROL, SHIFT], TAB]},
 
 
-  // **IDE SPECIFIC**
-  // *Intellij*
-  // open terminal
-  {from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
-  {from: [CMD_MOD2, 'k'], to: [[OPTION, FN], 'f12']},
+
+  // **APP SPECIFIC**
+  // INTELLIJ
+  // extend selection
+  {when: INTELLIJ, from: [COMMAND, 'w'], to: [OPTION, UP]},
+  // move line up
+  {when: INTELLIJ, from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
+  // move line down
+  {when: INTELLIJ, from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
+  // INTELLIJ - open terminal
+  {when: INTELLIJ, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
+  {when: INTELLIJ, from: [CMD_MOD2, 'k'], to: [[OPTION, FN], 'f12']},
+  // CHROME - open terminal/inspector
+  {when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c']},
+  {when: CHROME, from: [CMD_MOD2, 'k'], to: [[OPTION, COMMAND], 'c']},
 
   // **MOD1 LAYER**
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
@@ -259,6 +286,10 @@ let complexShort = [
 
 
   // **Surroundings**
+  // fixes - fix shifts not properly firing shortcuts (eg CMD+SHIFT+T)
+  {from: [COMMAND, 'grave_accent_and_tilde'], to: [COMMAND, SHIFT]},
+  {from: [COMMAND, 'slash'], to: [COMMAND, SHIFT]},
+
   // intellij - solve problem lightbulb
   {from: [MOD1, 'open_bracket'], to: [OPTION, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
@@ -341,10 +372,13 @@ for (let rule of complexShort) {
   else {
     [toMod, to] = rule.to
   }
+  let when = rule.when
+  when = when ? (Array.isArray(when) ? when : [when]) : undefined
   superdvorakBase.complex_modifications.rules.push({
       manipulators: [
         {
           description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ' : ''}${to}`,
+          conditions: when,
           from: {
             key_code: from,
             modifiers: {
