@@ -49,20 +49,11 @@ const MOD2 = {
   keys: ['left_option']
 }
 
-const CMD_MOD2 = {
-  name: 'command + MOD2',
-  keys: MOD2.keys.concat(COMMAND)
-}
-
-const mod3base = RSHIFT
-const mod3mods = [
-  ROPTION,
-  RCOMMAND,
-  FN
-]
-
+const mod3base = COMMAND
+const mod3mods = MOD2.keys
+// MOD3 is either ROPTION or CMD + LOPTION
 const MOD3 = {
-  name: mod3base,
+  name: 'MOD3',
   keys: mod3mods.concat([mod3base])
 }
 
@@ -217,10 +208,8 @@ let complexShort = [
   {when: INTELLIJ, from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
   // INTELLIJ - open terminal
   {when: INTELLIJ, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
-  {when: INTELLIJ, from: [CMD_MOD2, 'k'], to: [[OPTION, FN], 'f12']},
   // CHROME - open terminal/inspector
   {when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c']},
-  {when: CHROME, from: [CMD_MOD2, 'k'], to: [[OPTION, COMMAND], 'c']},
 
   // **MOD1 LAYER**
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
@@ -254,10 +243,19 @@ let complexShort = [
   {from: [MOD1, 'comma'], to: [SHIFT, 'w']},
   {from: [MOD1, 'period'], to: [SHIFT, 'e']},
 
+  // MOD1 - Arrows
+  {from: [MOD1, 'e'], to: [SHIFT, UP]},
+  {from: [MOD1, 's'], to: [SHIFT, LEFT]},
+  {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
+  {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
 
   // **MOD2 LAYER**
-  {from: [MOD2, 'y'], to: [SHIFT, 'grave_accent_and_tilde']},
-  {from: [MOD2, 't'], to: 'f2'},
+  {from: [MOD2, 'y'], to: [SHIFT, 'non_us_backslash']},
+  {from: [MOD2, 'n'], to: [SHIFT, '3']},
+  {from: [MOD2, 'comma'], to: 'backslash'},
+  {from: [MOD2, 'period'], to: [SHIFT, '6']},
+
+  // MOD2 - numbers
   {from: [MOD2, 'h'], to: '0'},
   {from: [MOD2, 'u'], to: '1'},
   {from: [MOD2, 'j'], to: '2'},
@@ -267,11 +265,7 @@ let complexShort = [
   {from: [MOD2, 'l'], to: '6'},
   {from: [MOD2, 'p'], to: '7'},
   {from: [MOD2, 'semicolon'], to: '8'},
-  {from: [MOD2, 'n'], to: [SHIFT, '3']},
   {from: [MOD2, 'm'], to: '9'},
-  {from: [MOD2, 'comma'], to: 'backslash'},
-  {from: [MOD2, 'period'], to: [SHIFT, '6']},
-
 
   // simple arrows
   {from: [MOD2, 'e'], to: UP},
