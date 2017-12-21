@@ -1,3 +1,9 @@
+// To overwrite key repeat
+/*
+defaults write -g InitialKeyRepeat -int 9 # normal minimum is 15 (225 ms)
+defaults write -g KeyRepeat -int 5 # normal minimum is 2 (30 ms)
+*/
+
 const os = require('os')
 const fs = require('fs')
 const karabinerBase = require('./karabinerBase')
@@ -36,7 +42,6 @@ const RIGHT = 'right_arrow'
 const mod1base = LSHIFT
 const mod1mods = [
   LCOMMAND,
-  LOPTION,
   FN
 ]
 
@@ -62,7 +67,7 @@ const MOD3 = {
 const INTELLIJ = {
   type: "frontmost_application_if",
   bundle_identifiers: [
-    '^com\\.jetbrains\\.pycharm$',
+    '^com\\.jetbrains\\.',
   ]
 }
 
@@ -73,11 +78,37 @@ const CHROME = {
   ]
 }
 
+const FINDER = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.apple\\.finder$',
+  ]
+}
+
 const ATOM = {
   type: "frontmost_application_if",
   bundle_identifiers: [
     '^com\\.github\\.atom',
   ]
+}
+const msKeyboardID = {
+  "vendor_id": 1118,
+  "product_id": 1957,
+  "description": "MS_KEYBOARD"
+}
+
+const MS_KEYBOARD = {
+    "type": "device_if",
+    "identifiers": [
+        msKeyboardID
+    ]
+}
+
+const NOT_MS_KEYBOARD = {
+    "type": "device_unless",
+    "identifiers": [
+        msKeyboardID
+    ]
 }
 
 let complex = [
@@ -172,7 +203,29 @@ let complex = [
 ]
 
 let complexShort = [
+
+  // **MS KEYBOARD**
+
+  // Fix the annoying MSKEYBOARD bug
+  {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], LEFT], to: 'a'},
+  {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], RIGHT], to: 'a'},
+
+  // MOD1 + RIGHT SHIFT = '`'
+  {when: MS_KEYBOARD, from: [MOD1, 'slash'], to: 'non_us_backslash'},
+
+  // In place of L and R COMMAND is L and R OPTION
+  {when: MS_KEYBOARD, from: ROPTION, to: RCOMMAND},
+  {when: MS_KEYBOARD, from: LOPTION, to: DELETE},
+  // In place of ROPTION is 'application'
+  {when: MS_KEYBOARD, from: 'application', to: [mod3mods, mod3base]},
+  // In place of LOPTION is LCOMMAND
+  {when: MS_KEYBOARD, from: LCOMMAND, to: LOPTION},
+  // `(non_us_backslash, top) and §(grave_accent_and_tilde, bottom) are swapped
+  {when: MS_KEYBOARD, from: 'non_us_backslash', to: SHIFT},
+
+
   // **SHORTCUTS**
+
   // * Universal shortcuts
   // undo
   {from: [[COMMAND, SHIFT], 'm'], to: [[COMMAND, SHIFT], 'slash']},
@@ -192,31 +245,65 @@ let complexShort = [
 
   // * Utility shortcuts
   // delete whole word
-  {from: [MOD1, LCOMMAND], to: [OPTION, DELETE]},
+  {when: NOT_MS_KEYBOARD, from: [MOD1, LCOMMAND], to: [OPTION, DELETE]},
+  {when: MS_KEYBOARD, from: [MOD1, LOPTION], to: [OPTION, DELETE]},
   // delete whole line
-  {from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
+  {when: NOT_MS_KEYBOARD, from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
+  {when: MS_KEYBOARD, from: [COMMAND, LOPTION], to: [COMMAND, DELETE]},
   // go to beggining of line
   {from: [[MOD1, COMMAND], 's'], to: [COMMAND, LEFT]},
   // go to end of line
   {from: [[MOD1, COMMAND], 'f'], to: [COMMAND, RIGHT]},
+  // go up down
+  {from: [[MOD1, COMMAND], 'e'], to: UP},
+  {from: [[MOD1, COMMAND], 'd'], to: DOWN},
+  // switcher/traverse chrome tabs
+  {when: ATOM, from: [COMMAND, 'j'], to: [[COMMAND, OPTION], RIGHT]},
+  {when: ATOM, from: [MOD3, 'j'], to: [[COMMAND, OPTION], LEFT]},
   // switcher/traverse chrome tabs
   {from: [COMMAND, 'j'], to: [CONTROL, TAB]},
   {from: [MOD3, 'j'], to: [[CONTROL, SHIFT], TAB]},
 
 
-
   // **APP SPECIFIC**
+
   // INTELLIJ
-  // extend selection
-  {when: INTELLIJ, from: [COMMAND, 'w'], to: [OPTION, UP]},
   // move line up
   {when: INTELLIJ, from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
   // move line down
   {when: INTELLIJ, from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
-  // INTELLIJ - open terminal
+  // open terminal
   {when: INTELLIJ, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
-  // CHROME - open terminal/inspector
+  // go to declaration
+  {when: INTELLIJ, from: [COMMAND, 'q'], to: [COMMAND, 'n']},
+  // refactor this..
+  {when: INTELLIJ, from: [COMMAND, 'p'], to: [CONTROL, 'k']},
+  // projects
+  {when: INTELLIJ, from: [COMMAND, 'f'], to: [COMMAND, '1']},
+  // new..
+  {when: INTELLIJ, from: [COMMAND, 'v'], to: [COMMAND, 'l']},
+  // reformat code
+  {when: INTELLIJ, from: [COMMAND, 'b'], to: [[COMMAND, OPTION], 'p']},
+  // navigate/go to file
+  {when: INTELLIJ, from: [COMMAND, 'l'], to: [[COMMAND, SHIFT], 's']},
+  // clone caret (empty shortcut by default in intellij)
+  {when: INTELLIJ, from: [MOD3, 'e'], to: [[ROPTION, FN, LSHIFT], '1']},
+  {when: INTELLIJ, from: [MOD3, 'd'], to: [[ROPTION, FN, LSHIFT], '2']},
+
+  // CHROME
+  // open terminal/inspector
   {when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c']},
+
+  // FINDER
+  // new folder
+  // {when: FINDER, from: [[SHIFT, COMMAND], 'l'], to: [] },
+
+  // **ATOM and INTELLIJ**
+  // extend selection
+  {when: [INTELLIJ, ATOM], from: [COMMAND, 'w'], to: [OPTION, UP]},
+  // shrink selection
+  {when: [INTELLIJ, ATOM], from: [COMMAND, 's'], to: [OPTION, DOWN]},
+
   // **ATOM**
   // open terminal
   {when: ATOM, from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
@@ -224,12 +311,24 @@ let complexShort = [
   {when: ATOM, from: [COMMAND, 'l'], to: [COMMAND, 'r']},
   // duplicate line
   {when: ATOM, from: [COMMAND, 'h'], to: [[COMMAND, SHIFT], 'h']},
-  // move line up
-  {when: ATOM, from: [COMMAND, 'e'], to: [[COMMAND, CONTROL], UP]},
-  // move line down
-  {when: ATOM, from: [COMMAND, 'd'], to: [[COMMAND, CONTROL], DOWN]},
+  // move line up (disabled: adds unnecessary modifiers)
+  // {when: ATOM, from: [COMMAND, 'e'], to: [[COMMAND, CONTROL], UP]},
+  // move line down (disabled: adds unnecessary modifiers)
+  // {when: ATOM, from: [COMMAND, 'd'], to: [[COMMAND, CONTROL], DOWN]},
+  // project explorer/pane
+  {when: ATOM, from: [COMMAND, 'f'], to: [CONTROL, '0']},
+  // open atoms dev-tools/inspector
+  {when: ATOM, from: [MOD3, 'l'], to: [[COMMAND, OPTION], 'g']},
+  // create new file/dir
+  {when: ATOM, from: [COMMAND, 'v'], to: [[COMMAND, OPTION], 's']},
+  // command palette
+  {when: ATOM, from: [COMMAND, 'r'], to: [[COMMAND, SHIFT], 'r']},
+  // jump to definition/go to declaration
+  {when: ATOM, from: [COMMAND, 'q'], to: [[COMMAND, OPTION], ENTER]},
+
 
   // **MOD1 LAYER**
+
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
   {from: [MOD1, 'w'], to: 'z'},
   {from: [MOD1, 'r'], to: 'hyphen'},
@@ -267,7 +366,9 @@ let complexShort = [
   {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
   {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
 
+
   // **MOD2 LAYER**
+
   {from: [MOD2, 'y'], to: [SHIFT, 'non_us_backslash']},
   {from: [MOD2, 'n'], to: [SHIFT, '3']},
   {from: [MOD2, 'comma'], to: 'backslash'},
@@ -300,13 +401,14 @@ let complexShort = [
   // **Surroundings**
   // fixes - fix shifts not properly firing shortcuts (eg CMD+SHIFT+T)
   {from: [COMMAND, 'grave_accent_and_tilde'], to: [COMMAND, SHIFT]},
+  // does not work :( {when: MS_KEYBOARD, from: [ROPTION, 'non_us_backslash'], to: [COMMAND, SHIFT]},
   {from: [COMMAND, 'slash'], to: [COMMAND, SHIFT]},
 
   // intellij - solve problem lightbulb
   {from: [MOD1, 'open_bracket'], to: [OPTION, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
-  ['grave_accent_and_tilde', SHIFT],
+  {from: 'grave_accent_and_tilde', to: SHIFT},
   ['open_bracket', ENTER],
   ['close_bracket', ENTER],
   [LCOMMAND, DELETE],
@@ -353,8 +455,12 @@ let transformRule = rule => {
   if (isString(rule.from)) {
     from = rule.from
   }
+  else if (Array.isArray(rule.from) && rule.from.length === 1) {
+    from = rule.from[0]
+  }
   else {
     [fromMod, from] = rule.from
+
     if (Array.isArray(fromMod) && fromMod.length > 1 && fromMod.filter(isObject).length > 0) {
       // In case of use MODX and regular mods at the same time as fromMods
       let newFromMod = []
@@ -384,7 +490,13 @@ let transformRule = rule => {
     [toMod, to] = rule.to
   }
   let when = rule.when
-  when = when ? (Array.isArray(when) ? when : [when]) : undefined
+  if (Array.isArray(when)) {
+    when = {
+      type: when[0].type,
+      bundle_identifiers: when.map(e => e.bundle_identifiers[0])
+    }
+  }
+  when = when ? [when] : undefined
   return {
       manipulators: [
         {
@@ -413,8 +525,10 @@ for (let rule of complexShort) {
   let ruleTransformed = transformRule(rule)
   if (rule.debug) {
     console.log('----')
-    console.log(rule)
-    console.log(ruleTransformed)
+    console.log(JSON.stringify(rule, null, 2))
+    console.log('=')
+    console.log(JSON.stringify(ruleTransformed, null, 2))
+    console.log('/---')
   }
   superdvorakBase.complex_modifications.rules.push(ruleTransformed)
 }
