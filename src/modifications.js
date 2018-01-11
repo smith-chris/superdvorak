@@ -130,7 +130,7 @@ const NOT_MS_KEYBOARD = {
 let complex = []
 
 let complexShort = [
-  // **** MODIFIERS ****
+  // TODO: **** MODIFIERS ****
 
   // MOD1
   {from: CAPSLOCK, to: [mod1mods, mod1base]},
@@ -140,9 +140,13 @@ let complexShort = [
   // MOD3
   {from: ROPTION, to: [mod3mods, mod3base]},
 
+  // MOD4
+  {from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base]},
 
 
-  // **MS KEYBOARD**
+
+
+  // TODO: ** MS KEYBOARD **
 
   // Fix the annoying MSKEYBOARD bug
   {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], LEFT], to: 'a'},
@@ -162,7 +166,7 @@ let complexShort = [
   {when: MS_KEYBOARD, from: 'non_us_backslash', to: SHIFT},
 
 
-  // **SHORTCUTS**
+  // TODO: ** UNIVERSAL SHORTCUTS**
 
   // * Universal shortcuts
   // undo
@@ -194,18 +198,27 @@ let complexShort = [
   {when: MS_KEYBOARD, from: [COMMAND, LOPTION], to: [COMMAND, DELETE]},
 
 
-  // go to beggining of line
-  {from: [MOD3, 'd'], to: [COMMAND, LEFT]},
-  {from: [MOD3, 's'], to: [OPTION, LEFT]},
-  // go to end of line
-  {from: [MOD3, 'e'], to: [COMMAND, RIGHT]},
-  {from: [MOD3, 'f'], to: [OPTION, RIGHT]},
+  // TODO: ** ARROWS **
 
-  // select text
-  {from: [MOD2, 'spacebar'], to: 'a'},
-  // {from: [MOD1, 's'], to: [SHIFT, LEFT]},
-  // {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
-  // {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
+  // go to beggining of line
+  // go to end of line
+  // jump words
+  {from: [MOD4, 'd'], to: [COMMAND, LEFT]},
+  {from: [MOD4, 's'], to: [OPTION, LEFT]},
+  {from: [MOD4, 'e'], to: [COMMAND, RIGHT]},
+  {from: [MOD4, 'f'], to: [OPTION, RIGHT]},
+
+  // MOD1 - Arrows - select text
+  {from: [MOD3, 'e'], to: [SHIFT, UP]},
+  {from: [MOD3, 's'], to: [SHIFT, LEFT]},
+  {from: [MOD3, 'd'], to: [SHIFT, DOWN]},
+  {from: [MOD3, 'f'], to: [SHIFT, RIGHT]},
+
+  // clone caret (empty shortcut by default in intellij)
+  {when: INTELLIJ, from: [MOD1, 'e'], to: [[ROPTION, FN, LSHIFT], '1']},
+  {when: INTELLIJ, from: [MOD1, 'd'], to: [[ROPTION, FN, LSHIFT], '2']},
+  {when: VSCODE, from: [MOD1, 'e'], to: [[OPTION, COMMAND], UP]},
+  {when: VSCODE, from: [MOD1, 'd'], to: [[OPTION, COMMAND], DOWN]},
 
 
 
@@ -226,7 +239,7 @@ let complexShort = [
 
   // **APP SPECIFIC**
 
-  // INTELLIJ
+  // TODO: INTELLIJ
   // move line up
   {when: INTELLIJ, from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
   // move line down
@@ -245,25 +258,22 @@ let complexShort = [
   {when: INTELLIJ, from: [COMMAND, 'b'], to: [[COMMAND, OPTION], 'p']},
   // navigate/go to file
   {when: INTELLIJ, from: [COMMAND, 'l'], to: [[COMMAND, SHIFT], 's']},
-  // clone caret (empty shortcut by default in intellij)
-  {when: INTELLIJ, from: [MOD3, 'e'], to: [[ROPTION, FN, LSHIFT], '1']},
-  {when: INTELLIJ, from: [MOD3, 'd'], to: [[ROPTION, FN, LSHIFT], '2']},
 
-  // CHROME
+  // TODO: CHROME
   // open terminal/inspector
   {when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c']},
 
-  // FINDER
+  // TODO: FINDER
   // new folder
   // {when: FINDER, from: [[SHIFT, COMMAND], 'l'], to: [] },
 
-  // **ATOM and INTELLIJ**
+  // TODO: ATOM and INTELLIJ
   // extend selection
   {when: [INTELLIJ, ATOM], from: [COMMAND, 'w'], to: [OPTION, UP]},
   // shrink selection
   {when: [INTELLIJ, ATOM], from: [COMMAND, 's'], to: [OPTION, DOWN]},
 
-  // **ATOM**
+  // TODO: ATOM
   // duplicate line
   {when: ATOM, from: [COMMAND, 'h'], to: [[COMMAND, SHIFT], 'h']},
   // move line up (disabled: adds unnecessary modifiers)
@@ -283,7 +293,7 @@ let complexShort = [
 
 
 
-  // ** VSCODE & ATOM **
+  // TODO: VSCODE & ATOM
 
   // open terminal
   {when: [ATOM, VSCODE], from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
@@ -292,7 +302,7 @@ let complexShort = [
   // file/fuzzy search / navigate to
   {when: [ATOM, VSCODE], from: [COMMAND, 'l'], to: [COMMAND, 'r']},
 
-  // ** VSCODE **
+  // TODO: VSCODE
   {when: VSCODE, from: [COMMAND, 'k'], to: [COMMAND, 'v']},
 
   // Extend/shrink selection
@@ -316,16 +326,13 @@ let complexShort = [
   {when: VSCODE, from: [COMMAND, 'h'], to: [[OPTION, SHIFT], DOWN]},
 
 
-  // Clone caret
-  // {when: VSCODE, from: [MOD3, 'e'], to: [[OPTION, COMMAND], UP]},
-  // {when: VSCODE, from: [MOD3, 'd'], to: [[OPTION, COMMAND], DOWN]},
 
 
   // Definition/Declaration
   {when: VSCODE, from: [COMMAND, 'q'], to: [FN, 'f12']},
 
 
-  // **MOD1 LAYER**
+  // TODO: ** MOD1 LAYER **
 
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
   {from: [MOD1, 'w'], to: 'z'},
@@ -361,14 +368,8 @@ let complexShort = [
   {from: [MOD1, 'comma'], to: [SHIFT, 'w']},
   {from: [MOD1, 'period'], to: [SHIFT, 'e']},
 
-  // // MOD1 - Arrows - select text
-  // {from: [MOD1, 'e'], to: [SHIFT, UP]},
-  // {from: [MOD1, 's'], to: [SHIFT, LEFT]},
-  // {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
-  // {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
 
-
-  // **MOD2 LAYER**
+  // TODO: ** MOD2 LAYER **
 
   {from: [MOD2, 'y'], to: [SHIFT, 'non_us_backslash']},
   {from: [MOD2, 'n'], to: [SHIFT, '3']},
@@ -405,7 +406,7 @@ let complexShort = [
   // does not work :( {when: MS_KEYBOARD, from: [ROPTION, 'non_us_backslash'], to: [COMMAND, SHIFT]},
   {from: [COMMAND, 'slash'], to: [COMMAND, SHIFT]},
 
-  // intellij - solve problem lightbulb
+  // intellij - solve problem lightbulb ??
   {from: [MOD1, 'open_bracket'], to: [OPTION, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
   {from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER]},
