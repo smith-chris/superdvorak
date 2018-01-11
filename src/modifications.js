@@ -12,6 +12,8 @@ const {isString, isObject} = require('./utils')
 
 let configPath = `${os.homedir()}/.config/karabiner/karabiner.json`
 
+const CAPSLOCK = 'caps_lock'
+
 const ENTER = 'return_or_enter'
 const DELETE = 'delete_or_backspace'
 const TAB = 'tab'
@@ -40,10 +42,7 @@ const LEFT = 'left_arrow'
 const RIGHT = 'right_arrow'
 
 const mod1base = LSHIFT
-const mod1mods = [
-  LCOMMAND,
-  FN
-]
+const mod1mods = [LCOMMAND, FN]
 
 const MOD1 = {
   name: 'MOD1',
@@ -61,6 +60,15 @@ const mod3mods = MOD2.keys
 const MOD3 = {
   name: 'MOD3',
   keys: mod3mods.concat([mod3base])
+}
+
+
+const mod4base = RCONTROL
+const mod4mods = [LSHIFT, FN]
+
+const MOD4 = {
+  name: 'MOD4',
+  keys: mod4mods.concat([mod4base])
 }
 
 // CONDITIONS
@@ -91,6 +99,14 @@ const ATOM = {
     '^com\\.github\\.atom',
   ]
 }
+
+const VSCODE = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.microsoft\\.VSCode',
+  ]
+}
+
 const msKeyboardID = {
   "vendor_id": 1118,
   "product_id": 1957,
@@ -111,98 +127,20 @@ const NOT_MS_KEYBOARD = {
     ]
 }
 
-let complex = [
-  {
-    manipulators: [
-      {
-        description: 'Change caps_lock to command+option+shift.',
-        from: {
-          key_code: 'caps_lock',
-          modifiers: {
-            optional: [
-              'any'
-            ]
-          }
-        },
-        to: [
-          {
-            key_code: mod1base,
-            modifiers: mod1mods
-          }
-        ],
-        type: 'basic'
-      }
-    ]
-  },
-  {
-    manipulators: [
-      {
-        description: 'Change caps_lock to control+command+option.',
-        from: {
-          key_code: 'quote',
-          modifiers: {
-            optional: [
-              'any'
-            ]
-          }
-        },
-        to: [
-          {
-            key_code: mod1base,
-            modifiers: mod1mods
-          }
-        ],
-        type: 'basic'
-      }
-    ]
-  },
-  {
-    manipulators: [
-      {
-        description: 'Change caps_lock to control+command+option.',
-        from: {
-          key_code: 'backslash',
-          modifiers: {
-            optional: [
-              'any'
-            ]
-          }
-        },
-        to: [
-          {
-            key_code: mod1base,
-            modifiers: mod1mods
-          }
-        ],
-        type: 'basic'
-      }
-    ]
-  },
-  {
-    manipulators: [
-      {
-        description: 'Change right option to command+option+shift.',
-        from: {
-          key_code: ROPTION,
-          modifiers: {
-            optional: [
-              'any'
-            ]
-          }
-        },
-        to: [
-          {
-            key_code: mod3base,
-            modifiers: mod3mods
-          }
-        ],
-        type: 'basic'
-      }
-    ]
-  }
-]
+let complex = []
 
 let complexShort = [
+  // **** MODIFIERS ****
+
+  // MOD1
+  {from: CAPSLOCK, to: [mod1mods, mod1base]},
+  {from: 'quote', to: [mod1mods, mod1base]},
+  {from: 'backslash', to: [mod1mods, mod1base]},
+
+  // MOD3
+  {from: ROPTION, to: [mod3mods, mod3base]},
+
+
 
   // **MS KEYBOARD**
 
@@ -211,7 +149,7 @@ let complexShort = [
   {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], RIGHT], to: 'a'},
 
   // MOD1 + RIGHT SHIFT = '`'
-  {when: MS_KEYBOARD, from: [MOD1, 'slash'], to: 'non_us_backslash'},
+  {from: [MOD1, 'slash'], to: 'non_us_backslash'},
 
   // In place of L and R COMMAND is L and R OPTION
   {when: MS_KEYBOARD, from: ROPTION, to: RCOMMAND},
@@ -239,9 +177,13 @@ let complexShort = [
   {from: [COMMAND, 'x'], to: 'escape'},
   // cut
   {from: [COMMAND, 'n'], to: [COMMAND, 'b']},
+  // toggle fullscreen mode
+  {from: [MOD2, 'x'], to: [[COMMAND, CONTROL], 'y']},
+
+  // * Universal programming shortcuts
 
   // comment with line comment
-  {from: [COMMAND, 'comma'], to: [COMMAND, 'keypad_slash']},
+  {from: [COMMAND, 'comma'], to: [COMMAND, 'open_bracket']},
 
   // * Utility shortcuts
   // delete whole word
@@ -250,19 +192,36 @@ let complexShort = [
   // delete whole line
   {when: NOT_MS_KEYBOARD, from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
   {when: MS_KEYBOARD, from: [COMMAND, LOPTION], to: [COMMAND, DELETE]},
+
+
   // go to beggining of line
-  {from: [[MOD1, COMMAND], 's'], to: [COMMAND, LEFT]},
+  {from: [MOD3, 'd'], to: [COMMAND, LEFT]},
+  {from: [MOD3, 's'], to: [OPTION, LEFT]},
   // go to end of line
-  {from: [[MOD1, COMMAND], 'f'], to: [COMMAND, RIGHT]},
-  // go up down
-  {from: [[MOD1, COMMAND], 'e'], to: UP},
-  {from: [[MOD1, COMMAND], 'd'], to: DOWN},
+  {from: [MOD3, 'e'], to: [COMMAND, RIGHT]},
+  {from: [MOD3, 'f'], to: [OPTION, RIGHT]},
+
+  // select text
+  {from: [MOD2, 'spacebar'], to: 'a'},
+  // {from: [MOD1, 's'], to: [SHIFT, LEFT]},
+  // {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
+  // {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
+
+
+
   // switcher/traverse chrome tabs
   {when: ATOM, from: [COMMAND, 'j'], to: [[COMMAND, OPTION], RIGHT]},
   {when: ATOM, from: [MOD3, 'j'], to: [[COMMAND, OPTION], LEFT]},
   // switcher/traverse chrome tabs
   {from: [COMMAND, 'j'], to: [CONTROL, TAB]},
   {from: [MOD3, 'j'], to: [[CONTROL, SHIFT], TAB]},
+
+  // MOD1 + CMD + KARROWS - placeholder
+  {from: [[MOD1, COMMAND], 'e'], to: 'a'},
+  {from: [[MOD1, COMMAND], 'd'], to: 'a'},
+
+  {from: [[MOD1, COMMAND], 's'], to: 'a'},
+  {from: [[MOD1, COMMAND], 'f'], to: 'a'},
 
 
   // **APP SPECIFIC**
@@ -305,10 +264,6 @@ let complexShort = [
   {when: [INTELLIJ, ATOM], from: [COMMAND, 's'], to: [OPTION, DOWN]},
 
   // **ATOM**
-  // open terminal
-  {when: ATOM, from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
-  // file search
-  {when: ATOM, from: [COMMAND, 'l'], to: [COMMAND, 'r']},
   // duplicate line
   {when: ATOM, from: [COMMAND, 'h'], to: [[COMMAND, SHIFT], 'h']},
   // move line up (disabled: adds unnecessary modifiers)
@@ -316,15 +271,58 @@ let complexShort = [
   // move line down (disabled: adds unnecessary modifiers)
   // {when: ATOM, from: [COMMAND, 'd'], to: [[COMMAND, CONTROL], DOWN]},
   // project explorer/pane
-  {when: ATOM, from: [COMMAND, 'f'], to: [CONTROL, '0']},
+  {when: ATOM, from: [COMMAND, 'f'], to: [COMMAND, 'backslash']},
   // open atoms dev-tools/inspector
   {when: ATOM, from: [MOD3, 'l'], to: [[COMMAND, OPTION], 'g']},
   // create new file/dir
   {when: ATOM, from: [COMMAND, 'v'], to: [[COMMAND, OPTION], 's']},
-  // command palette
-  {when: ATOM, from: [COMMAND, 'r'], to: [[COMMAND, SHIFT], 'r']},
   // jump to definition/go to declaration
   {when: ATOM, from: [COMMAND, 'q'], to: [[COMMAND, OPTION], ENTER]},
+  // refactor/rename
+  {when: ATOM, from: [COMMAND, 'p'], to: [[CONTROL, OPTION], 'o']},
+
+
+
+  // ** VSCODE & ATOM **
+
+  // open terminal
+  {when: [ATOM, VSCODE], from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
+  // command palette
+  {when: [ATOM, VSCODE], from: [COMMAND, 'r'], to: [[COMMAND, SHIFT], 'r']},
+  // file/fuzzy search / navigate to
+  {when: [ATOM, VSCODE], from: [COMMAND, 'l'], to: [COMMAND, 'r']},
+
+  // ** VSCODE **
+  {when: VSCODE, from: [COMMAND, 'k'], to: [COMMAND, 'v']},
+
+  // Extend/shrink selection
+  {when: VSCODE, from: [COMMAND, 'w'], to: [[CONTROL, SHIFT, COMMAND], RIGHT]},
+  {when: VSCODE, from: [COMMAND, 's'], to: [[CONTROL, SHIFT, COMMAND], LEFT]},
+  // Toggle project pane
+  {when: VSCODE, from: [COMMAND, 'f'], to: [COMMAND, 'n']},
+  // Move line up/down
+  {when: VSCODE, from: [COMMAND, 'e'], to: [OPTION, UP]},
+  {when: VSCODE, from: [COMMAND, 'd'], to: [OPTION, DOWN]},
+  // Rename
+  {when: VSCODE, from: [COMMAND, 'p'], to: [FN, 'f2']},
+  // Replace
+  {when: VSCODE, from: [COMMAND, 'o'], to: [[COMMAND, OPTION], 'y']},
+  // Reformat code
+  {when: VSCODE, from: [COMMAND, 'b'], to: [[SHIFT, OPTION], 'y']},
+  // New file
+  {when: VSCODE, from: [COMMAND, 'v'], to: [COMMAND, 'm']},
+  {when: VSCODE, from: [MOD3, 'v'], to: [[COMMAND, SHIFT], 'm']},
+  // Duplicate line
+  {when: VSCODE, from: [COMMAND, 'h'], to: [[OPTION, SHIFT], DOWN]},
+
+
+  // Clone caret
+  // {when: VSCODE, from: [MOD3, 'e'], to: [[OPTION, COMMAND], UP]},
+  // {when: VSCODE, from: [MOD3, 'd'], to: [[OPTION, COMMAND], DOWN]},
+
+
+  // Definition/Declaration
+  {when: VSCODE, from: [COMMAND, 'q'], to: [FN, 'f12']},
 
 
   // **MOD1 LAYER**
@@ -340,13 +338,16 @@ let complexShort = [
   {from: [MOD1, 'z'], to: [SHIFT, '4']},
   {from: [MOD1, 'x'], to: [SHIFT, '1']},
   {from: [MOD1, 'c'], to: [SHIFT, 'open_bracket']},
-  {from: [MOD1, 'v'], to: 'q'},
+  // Modulo/percent
+  {from: [MOD1, 'v'], to: [SHIFT, '5']},
   {from: [MOD1, 'b'], to: [SHIFT, '7']},
 
-  {from: [MOD1, 'y'], to: [SHIFT, '5']},
+  // Double quote
+  {from: [MOD1, 'y'], to: [SHIFT, 'q']},
   {from: [MOD1, 'u'], to: [SHIFT, 'equal_sign']},
   {from: [MOD1, 'i'], to: [SHIFT, '0']},
-  {from: [MOD1, 'o'], to: [SHIFT, 'q']},
+  // Single quote
+  {from: [MOD1, 'o'], to: 'q'},
   {from: [MOD1, 'p'], to: [SHIFT, 'close_bracket']},
 
   {from: [MOD1, 'h'], to: [SHIFT, 'z']},
@@ -360,11 +361,11 @@ let complexShort = [
   {from: [MOD1, 'comma'], to: [SHIFT, 'w']},
   {from: [MOD1, 'period'], to: [SHIFT, 'e']},
 
-  // MOD1 - Arrows
-  {from: [MOD1, 'e'], to: [SHIFT, UP]},
-  {from: [MOD1, 's'], to: [SHIFT, LEFT]},
-  {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
-  {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
+  // // MOD1 - Arrows - select text
+  // {from: [MOD1, 'e'], to: [SHIFT, UP]},
+  // {from: [MOD1, 's'], to: [SHIFT, LEFT]},
+  // {from: [MOD1, 'd'], to: [SHIFT, DOWN]},
+  // {from: [MOD1, 'f'], to: [SHIFT, RIGHT]},
 
 
   // **MOD2 LAYER**
