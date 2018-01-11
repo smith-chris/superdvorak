@@ -130,22 +130,6 @@ const NOT_MS_KEYBOARD = {
 let complex = []
 
 let complexShort = [
-  // TODO: **** MODIFIERS ****
-
-  // MOD1
-  {from: CAPSLOCK, to: [mod1mods, mod1base]},
-  {from: 'quote', to: [mod1mods, mod1base]},
-  {from: 'backslash', to: [mod1mods, mod1base]},
-
-  // MOD3
-  {from: ROPTION, to: [mod3mods, mod3base]},
-
-  // MOD4
-  {from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base]},
-
-
-
-
   // TODO: ** MS KEYBOARD **
 
   // Fix the annoying MSKEYBOARD bug
@@ -425,6 +409,20 @@ let complexShort = [
   ['z', 'b'],
   {from: [SHIFT, 'z'], to: [SHIFT, 'b']},
   ['b', 'slash'],
+
+
+  // TODO: **** MODIFIERS ****
+
+  // MOD1
+  {from: CAPSLOCK, to: [mod1mods, mod1base]},
+  {from: 'quote', to: [mod1mods, mod1base]},
+  {from: 'backslash', to: [mod1mods, mod1base]},
+
+  // MOD3
+  {from: ROPTION, to: [mod3mods, mod3base]},
+
+  // MOD4
+  {from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base]},
 ]
 
 let findDuplicates = array => {
@@ -499,6 +497,14 @@ let transformRule = rule => {
     }
   }
   when = when ? [when] : undefined
+  let modifiers = {}
+  let mandatoryMods = fromMod.hasOwnProperty('keys') ? fromMod.keys : fromMod
+  if (isObject(mandatoryMods) && Object.keys(mandatoryMods).length === 0) {
+    modifiers.optional = 'any'
+  }
+  else {
+    modifiers.mandatory = mandatoryMods
+  }
   return {
       manipulators: [
         {
@@ -506,9 +512,7 @@ let transformRule = rule => {
           conditions: when,
           from: {
             key_code: from,
-            modifiers: {
-              mandatory: fromMod.hasOwnProperty('keys') ? fromMod.keys : fromMod
-            }
+            modifiers
           },
           to: [
             {
@@ -533,89 +537,6 @@ for (let rule of complexShort) {
     console.log('/---')
   }
   superdvorakBase.complex_modifications.rules.push(ruleTransformed)
-}
-
-
-let a = {
-  description: 'Change right_command+hjkl to arrow keys',
-  manipulators: [
-    {
-      from: {
-        key_code: 'h',
-        modifiers: {
-          mandatory: [
-            'right_command'
-          ],
-          optional: [
-            'any'
-          ]
-        }
-      },
-      to: [
-        {
-          key_code: 'left_arrow'
-        }
-      ],
-      type: 'basic'
-    },
-    {
-      from: {
-        key_code: 'j',
-        modifiers: {
-          mandatory: [
-            'right_command'
-          ],
-          optional: [
-            'any'
-          ]
-        }
-      },
-      to: [
-        {
-          key_code: 'down_arrow'
-        }
-      ],
-      type: 'basic'
-    },
-    {
-      from: {
-        key_code: 'k',
-        modifiers: {
-          mandatory: [
-            'right_command'
-          ],
-          optional: [
-            'any'
-          ]
-        }
-      },
-      to: [
-        {
-          key_code: 'up_arrow'
-        }
-      ],
-      type: 'basic'
-    },
-    {
-      from: {
-        key_code: 'l',
-        modifiers: {
-          mandatory: [
-            'right_command'
-          ],
-          optional: [
-            'any'
-          ]
-        }
-      },
-      to: [
-        {
-          key_code: 'right_arrow'
-        }
-      ],
-      type: 'basic'
-    }
-  ]
 }
 
 for (let rule of complex) {
