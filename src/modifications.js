@@ -42,7 +42,7 @@ const LEFT = 'left_arrow'
 const RIGHT = 'right_arrow'
 
 const mod1base = LSHIFT
-const mod1mods = [LCOMMAND, FN]
+const mod1mods = [FN]
 
 const MOD1 = {
   name: 'MOD1',
@@ -79,6 +79,14 @@ const INTELLIJ = {
   ]
 }
 
+const INTELLIJ_UBUNTU = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.jetbrains\\.',
+    '^com\\.parallels\\.desktop\\.console',
+  ]
+}
+
 const CHROME = {
   type: "frontmost_application_if",
   bundle_identifiers: [
@@ -107,37 +115,55 @@ const VSCODE = {
   ]
 }
 
+const VSCODE_UBUNTU = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.microsoft\\.VSCode',
+    // '^com\\.parallels\\.desktop\\.console',
+  ]
+}
+
+const UBUNTU = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    '^com\\.parallels\\.desktop\\.console',
+  ]
+}
+
+// const msKeyboardID = {
+//   "vendor_id": 1118,
+//   "product_id": 1957,
+//   "description": "MS_KEYBOARD"
+// }
 const msKeyboardID = {
   "vendor_id": 1118,
-  "product_id": 1957,
+  "product_id": 219,
   "description": "MS_KEYBOARD"
 }
 
 const MS_KEYBOARD = {
-    "type": "device_if",
-    "identifiers": [
-        msKeyboardID
-    ]
+  "type": "device_if",
+  "identifiers": [
+    msKeyboardID
+  ]
 }
 
 const NOT_MS_KEYBOARD = {
-    "type": "device_unless",
-    "identifiers": [
-        msKeyboardID
-    ]
+  "type": "device_unless",
+  "identifiers": [
+    msKeyboardID
+  ]
 }
 
 let complex = []
 
+// UBUNTU is for pycharm eclipse keymap
 let complexShort = [
   // TODO: ** MS KEYBOARD **
 
   // Fix the annoying MSKEYBOARD bug
   {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], LEFT], to: 'a'},
   {when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], RIGHT], to: 'a'},
-
-  // MOD1 + RIGHT SHIFT = '`'
-  {from: [MOD1, 'slash'], to: 'non_us_backslash'},
 
   // In place of L and R COMMAND is L and R OPTION
   {when: MS_KEYBOARD, from: ROPTION, to: RCOMMAND},
@@ -157,6 +183,7 @@ let complexShort = [
   {from: [[COMMAND, SHIFT], 'm'], to: [[COMMAND, SHIFT], 'slash']},
   {from: [COMMAND, 'm'], to: [COMMAND, 'slash']},
   // close
+  {when: UBUNTU, from: [MOD2, 'c'], to: [CONTROL, 'comma']},
   {from: [COMMAND, 'c'], to: [COMMAND, 'comma']},
   {from: [MOD2, 'c'], to: [COMMAND, 'comma']},
   // preferences/settings
@@ -199,11 +226,10 @@ let complexShort = [
   {from: [MOD3, 'f'], to: [SHIFT, RIGHT]},
 
   // clone caret (empty shortcut by default in intellij)
-  {when: INTELLIJ, from: [MOD1, 'e'], to: [[ROPTION, FN, LSHIFT], '1']},
-  {when: INTELLIJ, from: [MOD1, 'd'], to: [[ROPTION, FN, LSHIFT], '2']},
-  {when: VSCODE, from: [MOD1, 'e'], to: [[OPTION, COMMAND], UP]},
-  {when: VSCODE, from: [MOD1, 'd'], to: [[OPTION, COMMAND], DOWN]},
-
+  {when: INTELLIJ_UBUNTU, from: [MOD1, 'e'], to: [[ROPTION, FN, LSHIFT], '1']},
+  {when: INTELLIJ_UBUNTU, from: [MOD1, 'd'], to: [[ROPTION, FN, LSHIFT], '2']},
+  {when: VSCODE_UBUNTU, from: [MOD1, 'e'], to: [[OPTION, COMMAND], UP]},
+  {when: VSCODE_UBUNTU, from: [MOD1, 'd'], to: [[OPTION, COMMAND], DOWN]},
 
 
   // switcher/traverse chrome tabs
@@ -226,22 +252,31 @@ let complexShort = [
   // TODO: INTELLIJ
   // move line up
   {when: INTELLIJ, from: [COMMAND, 'e'], to: [[OPTION, SHIFT], UP]},
+  {when: UBUNTU, from: [COMMAND, 'e'], to: [[COMMAND, SHIFT], UP]},
   // move line down
   {when: INTELLIJ, from: [COMMAND, 'd'], to: [[OPTION, SHIFT], DOWN]},
+  {when: UBUNTU, from: [COMMAND, 'd'], to: [[COMMAND, SHIFT], DOWN]},
   // open terminal
-  {when: INTELLIJ, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
+  {when: INTELLIJ_UBUNTU, from: [MOD3, 'k'], to: [[OPTION, FN], 'f12']},
   // go to declaration
   {when: INTELLIJ, from: [COMMAND, 'q'], to: [COMMAND, 'n']},
+  {when: UBUNTU, from: [COMMAND, 'q'], to: [FN, 'f3']},
   // refactor this..
   {when: INTELLIJ, from: [COMMAND, 'p'], to: [CONTROL, 'k']},
+  {when: UBUNTU, from: [COMMAND, 'p'], to: [[CONTROL, OPTION, SHIFT], 'k']},
   // projects
   {when: INTELLIJ, from: [COMMAND, 'f'], to: [COMMAND, '1']},
+  {when: UBUNTU, from: [COMMAND, 'f'], to: [OPTION, '1']},
   // new..
-  {when: INTELLIJ, from: [COMMAND, 'v'], to: [COMMAND, 'l']},
+  {when: INTELLIJ_UBUNTU, from: [COMMAND, 'v'], to: [COMMAND, 'l']},
   // reformat code
   {when: INTELLIJ, from: [COMMAND, 'b'], to: [[COMMAND, OPTION], 'p']},
+  {when: UBUNTU, from: [COMMAND, 'b'], to: [[COMMAND, SHIFT], 'y']},
   // navigate/go to file
   {when: INTELLIJ, from: [COMMAND, 'l'], to: [[COMMAND, SHIFT], 's']},
+  {when: UBUNTU, from: [COMMAND, 'l'], to: [[COMMAND, SHIFT], 'o']},
+  // duplicate line
+  // {when: UBUNTU, from: [COMMAND, 'h'], to: [[CONTROL, OPTION], DOWN]},
 
   // TODO: CHROME
   // open terminal/inspector
@@ -254,8 +289,11 @@ let complexShort = [
   // TODO: ATOM and INTELLIJ
   // extend selection
   {when: [INTELLIJ, ATOM], from: [COMMAND, 'w'], to: [OPTION, UP]},
+  {when: UBUNTU, from: [COMMAND, 'w'], to: [[OPTION, SHIFT], UP]},
+
   // shrink selection
   {when: [INTELLIJ, ATOM], from: [COMMAND, 's'], to: [OPTION, DOWN]},
+  {when: UBUNTU, from: [COMMAND, 's'], to: [[OPTION, SHIFT], DOWN]},
 
   // TODO: ATOM
   // duplicate line
@@ -275,48 +313,51 @@ let complexShort = [
   // refactor/rename
   {when: ATOM, from: [COMMAND, 'p'], to: [[CONTROL, OPTION], 'o']},
 
-
+  // {when: VSCODE, from: 'a', to: 'b'},
 
   // TODO: VSCODE & ATOM
 
   // open terminal
+  // {when: [VSCC_UBUNTU], from: [MOD3, 'k'], to: [CONTROL, 'grave_accent_and_tilde']},
   {when: [ATOM, VSCODE], from: [MOD3, 'k'], to: [CONTROL, 'non_us_backslash']},
   // command palette
-  {when: [ATOM, VSCODE], from: [COMMAND, 'r'], to: [[COMMAND, SHIFT], 'r']},
+  {when: [ATOM, VSCODE_UBUNTU], from: [COMMAND, 'r'], to: [[COMMAND, SHIFT], 'r']},
   // file/fuzzy search / navigate to
-  {when: [ATOM, VSCODE], from: [COMMAND, 'l'], to: [COMMAND, 'r']},
+  {when: [ATOM, VSCODE_UBUNTU], from: [COMMAND, 'l'], to: [COMMAND, 'r']},
 
   // TODO: VSCODE
-  {when: VSCODE, from: [COMMAND, 'k'], to: [COMMAND, 'v']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'k'], to: [COMMAND, 'v']},
 
   // Extend/shrink selection
-  {when: VSCODE, from: [COMMAND, 'w'], to: [[CONTROL, SHIFT, COMMAND], RIGHT]},
-  {when: VSCODE, from: [COMMAND, 's'], to: [[CONTROL, SHIFT, COMMAND], LEFT]},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'w'], to: [[CONTROL, SHIFT, COMMAND], RIGHT]},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 's'], to: [[CONTROL, SHIFT, COMMAND], LEFT]},
   // Toggle project pane
-  {when: VSCODE, from: [COMMAND, 'f'], to: [COMMAND, 'n']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'f'], to: [COMMAND, 'n']},
   // Move line up/down
-  {when: VSCODE, from: [COMMAND, 'e'], to: [OPTION, UP]},
-  {when: VSCODE, from: [COMMAND, 'd'], to: [OPTION, DOWN]},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'e'], to: [OPTION, UP]},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'd'], to: [OPTION, DOWN]},
   // Rename
-  {when: VSCODE, from: [COMMAND, 'p'], to: [FN, 'f2']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'p'], to: [FN, 'f2']},
   // Replace
-  {when: VSCODE, from: [COMMAND, 'o'], to: [[COMMAND, OPTION], 'y']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'o'], to: [[COMMAND, OPTION], 'y']},
   // Reformat code
-  {when: VSCODE, from: [COMMAND, 'b'], to: [[SHIFT, OPTION], 'y']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'b'], to: [[SHIFT, OPTION], 'y']},
   // New file
-  {when: VSCODE, from: [COMMAND, 'v'], to: [COMMAND, 'm']},
-  {when: VSCODE, from: [MOD3, 'v'], to: [[COMMAND, SHIFT], 'm']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'v'], to: [COMMAND, 'm']},
+  {when: VSCODE_UBUNTU, from: [MOD3, 'v'], to: [[COMMAND, SHIFT], 'm']},
   // Duplicate line
-  {when: VSCODE, from: [COMMAND, 'h'], to: [[OPTION, SHIFT], DOWN]},
-
-
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'h'], to: [[OPTION, SHIFT], DOWN]},
 
 
   // Definition/Declaration
-  {when: VSCODE, from: [COMMAND, 'q'], to: [FN, 'f12']},
+  {when: VSCODE_UBUNTU, from: [COMMAND, 'q'], to: [FN, 'f12']},
 
 
   // TODO: ** MOD1 LAYER **
+
+  // Placeholders - no use for now
+  {from: [MOD1, 's'], to: 'a'},
+  {from: [MOD1, 'f'], to: 'a'},
 
   {from: [MOD1, 'q'], to: [SHIFT, 'backslash']},
   {from: [MOD1, 'w'], to: 'z'},
@@ -353,9 +394,19 @@ let complexShort = [
   {from: [MOD1, 'period'], to: [SHIFT, 'e']},
 
 
+
+
+  // MOD1 + RIGHT SHIFT = '`'
+  {when: UBUNTU, from: [MOD1, 'slash'], to: 'grave_accent_and_tilde'},
+  {from: [MOD1, 'slash'], to: 'non_us_backslash'},
+
+
   // TODO: ** MOD2 LAYER **
 
+  // Ubuntu - same as MS_KB has 'non_us_backslash' and 'grave_accent_and_tilde' swapped
+  {when: UBUNTU, from: [MOD2, 'y'], to: [SHIFT, 'grave_accent_and_tilde']},
   {from: [MOD2, 'y'], to: [SHIFT, 'non_us_backslash']},
+
   {from: [MOD2, 'n'], to: [SHIFT, '3']},
   {from: [MOD2, 'comma'], to: 'backslash'},
   {from: [MOD2, 'period'], to: [SHIFT, '6']},
@@ -405,10 +456,11 @@ let complexShort = [
   // always right shift is pressed
   [LSHIFT, SHIFT],
 
-  // **SWAPS**
+  // TODO: **** SWAPS ****
   ['z', 'b'],
   {from: [SHIFT, 'z'], to: [SHIFT, 'b']},
   ['b', 'slash'],
+  {from: [SHIFT, 'b'], to: [SHIFT, 'slash']},
 
 
   // TODO: **** MODIFIERS ****
@@ -423,6 +475,9 @@ let complexShort = [
 
   // MOD4
   {from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base]},
+
+  // // TODO: **** UBUNTU ****
+  // {from: [LOPTION], to: ['a']},
 ]
 
 let findDuplicates = array => {
@@ -491,9 +546,13 @@ let transformRule = rule => {
   }
   let when = rule.when
   if (Array.isArray(when)) {
+    let bundle_identifiers = []
+    for (let elem of when) {
+      bundle_identifiers = bundle_identifiers.concat(elem.bundle_identifiers)
+    }
     when = {
       type: when[0].type,
-      bundle_identifiers: when.map(e => e.bundle_identifiers[0])
+      bundle_identifiers
     }
   }
   when = when ? [when] : undefined
@@ -506,24 +565,24 @@ let transformRule = rule => {
     modifiers.mandatory = mandatoryMods
   }
   return {
-      manipulators: [
-        {
-          description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ' : ''}${to}`,
-          conditions: when,
-          from: {
-            key_code: from,
-            modifiers
-          },
-          to: [
-            {
-              key_code: to,
-              modifiers: toMod
-            }
-          ],
-          type: 'basic'
-        }
-      ]
-    }
+    manipulators: [
+      {
+        description: `${fromMod.name || fromMod} + ${from} => ${toMod ? toMod + ' + ' : ''}${to}`,
+        conditions: when,
+        from: {
+          key_code: from,
+          modifiers
+        },
+        to: [
+          {
+            key_code: to,
+            modifiers: toMod
+          }
+        ],
+        type: 'basic'
+      }
+    ]
+  }
 
 }
 
