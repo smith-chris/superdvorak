@@ -71,6 +71,8 @@ const MOD4 = {
   keys: mod4mods.concat([mod4base])
 }
 
+const REMOTE_DESKTOP = '^com\\.google\\.Chrome\\.canary$'
+
 // CONDITIONS
 const INTELLIJ = {
   type: "frontmost_application_if",
@@ -130,6 +132,13 @@ const UBUNTU = {
   ]
 }
 
+const REMOTE_UBUNTU = {
+  type: "frontmost_application_if",
+  bundle_identifiers: [
+    REMOTE_DESKTOP
+  ]
+}
+
 // const msKeyboardID = {
 //   "vendor_id": 1118,
 //   "product_id": 1957,
@@ -159,6 +168,7 @@ let complex = []
 
 // UBUNTU is for pycharm eclipse keymap
 let complexShort = [
+
   // TODO: ** MS KEYBOARD **
 
   // Fix the annoying MSKEYBOARD bug
@@ -176,37 +186,69 @@ let complexShort = [
   {when: MS_KEYBOARD, from: 'non_us_backslash', to: SHIFT},
 
 
+  // TODO: ** REMOTE UBENTU **
+  // To make alt key work on ubuntu you need to change it from Super_R to Alt_R
+  // create config:
+  // $ xmodmap -pke > ~/.Xmodmap
+  // $ vi ~/.Xmodmap
+  // change keycode 134 to 'keycode 134 = Alt_R' and save
+  // apply changes:
+  // $ xmodmap ~/.Xmodmap
+
   // TODO: ** UNIVERSAL SHORTCUTS**
 
   // * Universal shortcuts
+
+  // So ubuntu has right shortcuts
+  {when: REMOTE_UBUNTU, from: RCOMMAND, to: CONTROL},
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'slash'], to: [CONTROL, SHIFT]},
+
   // undo
+  {when: REMOTE_UBUNTU, from: [[CONTROL, SHIFT], 'm'], to: [[CONTROL, SHIFT], 'slash']},
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'm'], to: [CONTROL, 'slash']},
+
+
   {from: [[COMMAND, SHIFT], 'm'], to: [[COMMAND, SHIFT], 'slash']},
   {from: [COMMAND, 'm'], to: [COMMAND, 'slash']},
+
   // close
+  {when: REMOTE_UBUNTU, from: [LOPTION, 'c'], to: [CONTROL, 'comma']},
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'c'], to: [CONTROL, 'comma']},
   {when: UBUNTU, from: [MOD2, 'c'], to: [CONTROL, 'comma']},
+
   {from: [COMMAND, 'c'], to: [COMMAND, 'comma']},
   {from: [MOD2, 'c'], to: [COMMAND, 'comma']},
   // preferences/settings
+  {when: REMOTE_UBUNTU, from: [LOPTION, 'a'], to: [[CONTROL, OPTION], 'semicolon']},
   {from: [MOD2, 'a'], to: [COMMAND, 'w']},
   // escape
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'x'], to: 'escape'},
   {from: [COMMAND, 'x'], to: 'escape'},
   // cut
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'n'], to: [CONTROL, 'b']},
   {from: [COMMAND, 'n'], to: [COMMAND, 'b']},
   // toggle fullscreen mode
   {from: [MOD2, 'x'], to: [[COMMAND, CONTROL], 'y']},
 
+  // just disable quit shortcut
+  {from: [MOD3, 'x'], to: 'a'},
+
   // * Universal programming shortcuts
 
   // comment with line comment
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'comma'], to: [CONTROL, 'open_bracket']},
   {from: [COMMAND, 'comma'], to: [COMMAND, 'open_bracket']},
 
   // * Utility shortcuts
   // delete whole word
+  {when: REMOTE_UBUNTU, from: [MOD1, LCOMMAND], to: [CONTROL, DELETE]},
   {when: NOT_MS_KEYBOARD, from: [MOD1, LCOMMAND], to: [OPTION, DELETE]},
   {when: MS_KEYBOARD, from: [MOD1, LOPTION], to: [OPTION, DELETE]},
   // delete whole line
+  {when: REMOTE_UBUNTU, from: [CONTROL, LCOMMAND], to: [CONTROL, 't']},
   {when: NOT_MS_KEYBOARD, from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE]},
   {when: MS_KEYBOARD, from: [COMMAND, LOPTION], to: [COMMAND, DELETE]},
+
 
 
   // TODO: ** ARROWS **
@@ -266,6 +308,7 @@ let complexShort = [
   {when: UBUNTU, from: [COMMAND, 'p'], to: [[CONTROL, OPTION, SHIFT], 'k']},
   // projects
   {when: INTELLIJ, from: [COMMAND, 'f'], to: [COMMAND, '1']},
+  {when: REMOTE_UBUNTU, from: [CONTROL, 'f'], to: [OPTION, '1']},
   {when: UBUNTU, from: [COMMAND, 'f'], to: [OPTION, '1']},
   // new..
   {when: INTELLIJ_UBUNTU, from: [COMMAND, 'v'], to: [COMMAND, 'l']},
