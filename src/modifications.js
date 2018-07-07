@@ -139,14 +139,9 @@ const REMOTE_UBUNTU = {
   ]
 }
 
-// const msKeyboardID = {
-//   "vendor_id": 1118,
-//   "product_id": 1957,
-//   "description": "MS_KEYBOARD"
-// }
 const msKeyboardID = {
   "vendor_id": 1118,
-  "product_id": 219,
+  "product_id": 1957,
   "description": "MS_KEYBOARD"
 }
 
