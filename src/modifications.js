@@ -46,12 +46,12 @@ const mod1mods = [FN]
 
 const MOD1 = {
   name: 'MOD1',
-  keys: mod1mods.concat([mod1base])
+  keys: mod1mods.concat([mod1base]),
 }
 
 const MOD2 = {
   name: 'MOD2',
-  keys: [LOPTION]
+  keys: [LOPTION],
 }
 
 const mod3base = COMMAND
@@ -59,7 +59,7 @@ const mod3mods = MOD2.keys
 // MOD3 is either ROPTION or CMD + LOPTION
 const MOD3 = {
   name: 'MOD3',
-  keys: mod3mods.concat([mod3base])
+  keys: mod3mods.concat([mod3base]),
 }
 
 const mod4base = RCONTROL
@@ -67,7 +67,7 @@ const mod4mods = [LSHIFT, FN]
 
 const MOD4 = {
   name: 'MOD4',
-  keys: mod4mods.concat([mod4base])
+  keys: mod4mods.concat([mod4base]),
 }
 
 const REMOTE_DESKTOP = '^com\\.google\\.Chrome\\.canary$'
@@ -75,69 +75,72 @@ const REMOTE_DESKTOP = '^com\\.google\\.Chrome\\.canary$'
 // CONDITIONS
 const INTELLIJ = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.jetbrains\\.']
+  bundle_identifiers: ['^com\\.jetbrains\\.'],
 }
 
 const INTELLIJ_UBUNTU = {
   type: 'frontmost_application_if',
   bundle_identifiers: [
     '^com\\.jetbrains\\.',
-    '^com\\.parallels\\.desktop\\.console'
-  ]
+    '^com\\.parallels\\.desktop\\.console',
+  ],
 }
 
 const CHROME = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.google\\.Chrome$']
+  bundle_identifiers: ['^com\\.google\\.Chrome$'],
 }
 
 const FINDER = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.apple\\.finder$']
+  bundle_identifiers: ['^com\\.apple\\.finder$'],
 }
 
 const ATOM = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.github\\.atom']
+  bundle_identifiers: ['^com\\.github\\.atom'],
 }
 
 const VSCODE = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.microsoft\\.VSCode']
+  bundle_identifiers: [
+    '^com\\.microsoft\\.VSCode',
+    '^com\\.microsoft\\.VSCodeInsiders',
+  ],
 }
 
 const VSCODE_UBUNTU = {
   type: 'frontmost_application_if',
   bundle_identifiers: [
-    '^com\\.microsoft\\.VSCode'
+    '^com\\.microsoft\\.VSCode',
     // '^com\\.parallels\\.desktop\\.console',
-  ]
+  ],
 }
 
 const UBUNTU = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.parallels\\.desktop\\.console']
+  bundle_identifiers: ['^com\\.parallels\\.desktop\\.console'],
 }
 
 const REMOTE_UBUNTU = {
   type: 'frontmost_application_if',
-  bundle_identifiers: [REMOTE_DESKTOP]
+  bundle_identifiers: [REMOTE_DESKTOP],
 }
 
 const msKeyboardID = {
   vendor_id: 1118,
   product_id: 1957,
-  description: 'MS_KEYBOARD'
+  description: 'MS_KEYBOARD',
 }
 
 const MS_KEYBOARD = {
   type: 'device_if',
-  identifiers: [msKeyboardID]
+  identifiers: [msKeyboardID],
 }
 
 const NOT_MS_KEYBOARD = {
   type: 'device_unless',
-  identifiers: [msKeyboardID]
+  identifiers: [msKeyboardID],
 }
 
 let complex = []
@@ -181,7 +184,7 @@ let complexShort = [
   {
     when: REMOTE_UBUNTU,
     from: [[CONTROL, SHIFT], 'm'],
-    to: [[CONTROL, SHIFT], 'slash']
+    to: [[CONTROL, SHIFT], 'slash'],
   },
   { when: REMOTE_UBUNTU, from: [CONTROL, 'm'], to: [CONTROL, 'slash'] },
 
@@ -199,7 +202,7 @@ let complexShort = [
   {
     when: REMOTE_UBUNTU,
     from: [LOPTION, 'a'],
-    to: [[CONTROL, OPTION], 'semicolon']
+    to: [[CONTROL, OPTION], 'semicolon'],
   },
   { from: [MOD2, 'a'], to: [COMMAND, 'w'] },
   // escape
@@ -220,7 +223,7 @@ let complexShort = [
   {
     when: REMOTE_UBUNTU,
     from: [CONTROL, 'comma'],
-    to: [CONTROL, 'open_bracket']
+    to: [CONTROL, 'open_bracket'],
   },
   { from: [COMMAND, 'comma'], to: [COMMAND, 'open_bracket'] },
 
@@ -254,12 +257,12 @@ let complexShort = [
   {
     when: INTELLIJ_UBUNTU,
     from: [MOD1, 'e'],
-    to: [[ROPTION, FN, LSHIFT], '1']
+    to: [[ROPTION, FN, LSHIFT], '1'],
   },
   {
     when: INTELLIJ_UBUNTU,
     from: [MOD1, 'd'],
-    to: [[ROPTION, FN, LSHIFT], '2']
+    to: [[ROPTION, FN, LSHIFT], '2'],
   },
   { when: VSCODE_UBUNTU, from: [MOD1, 'e'], to: [[OPTION, COMMAND], UP] },
   { when: VSCODE_UBUNTU, from: [MOD1, 'd'], to: [[OPTION, COMMAND], DOWN] },
@@ -354,13 +357,13 @@ let complexShort = [
   {
     when: [ATOM, VSCODE],
     from: [MOD3, 'k'],
-    to: [CONTROL, 'non_us_backslash']
+    to: [CONTROL, 'non_us_backslash'],
   },
   // command palette
   {
     when: [ATOM, VSCODE_UBUNTU],
     from: [COMMAND, 'r'],
-    to: [[COMMAND, SHIFT], 'r']
+    to: [[COMMAND, SHIFT], 'r'],
   },
   // file/fuzzy search / navigate to
   { when: [ATOM, VSCODE_UBUNTU], from: [COMMAND, 'l'], to: [COMMAND, 'r'] },
@@ -372,12 +375,12 @@ let complexShort = [
   {
     when: VSCODE_UBUNTU,
     from: [COMMAND, 'w'],
-    to: [[CONTROL, SHIFT, COMMAND], RIGHT]
+    to: [[CONTROL, SHIFT, COMMAND], RIGHT],
   },
   {
     when: VSCODE_UBUNTU,
     from: [COMMAND, 's'],
-    to: [[CONTROL, SHIFT, COMMAND], LEFT]
+    to: [[CONTROL, SHIFT, COMMAND], LEFT],
   },
   // Toggle project pane
   { when: VSCODE_UBUNTU, from: [COMMAND, 'f'], to: [COMMAND, 'n'] },
@@ -482,7 +485,7 @@ let complexShort = [
   { from: [COMMAND, 'slash'], to: [COMMAND, SHIFT] },
 
   // intellij - solve problem lightbulb ??
-  { from: [MOD1, 'open_bracket'], to: [OPTION, ENTER] },
+  { from: [MOD1, 'open_bracket'], to: [COMMAND, 'e'] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
   { from: 'grave_accent_and_tilde', to: SHIFT },
@@ -513,7 +516,7 @@ let complexShort = [
   { from: ROPTION, to: [mod3mods, mod3base] },
 
   // MOD4
-  { from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base] }
+  { from: [LOPTION, 'spacebar'], to: [mod4mods, mod4base] },
 
   // // TODO: **** UBUNTU ****
   // {from: [LOPTION], to: ['a']},
@@ -537,9 +540,9 @@ let transformRule = rule => {
           description: `${from} => ${to}`,
           from: { key_code: from },
           to: [{ key_code: to }],
-          type: 'basic'
-        }
-      ]
+          type: 'basic',
+        },
+      ],
     }
   }
   let from,
@@ -590,7 +593,7 @@ let transformRule = rule => {
     }
     when = {
       type: when[0].type,
-      bundle_identifiers
+      bundle_identifiers,
     }
   }
   when = when ? [when] : undefined
@@ -610,17 +613,17 @@ let transformRule = rule => {
         conditions: when,
         from: {
           key_code: from,
-          modifiers
+          modifiers,
         },
         to: [
           {
             key_code: to,
-            modifiers: toMod
-          }
+            modifiers: toMod,
+          },
         ],
-        type: 'basic'
-      }
-    ]
+        type: 'basic',
+      },
+    ],
   }
 }
 
