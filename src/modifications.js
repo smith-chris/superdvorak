@@ -91,6 +91,11 @@ const CHROME = {
   bundle_identifiers: ['^com\\.google\\.Chrome$'],
 }
 
+const FIREFOX = {
+  type: 'frontmost_application_if',
+  bundle_identifiers: ['^org\\.mozilla\\.firefox$'],
+}
+
 const FINDER = {
   type: 'frontmost_application_if',
   bundle_identifiers: ['^com\\.apple\\.finder$'],
@@ -316,6 +321,7 @@ let complexShort = [
   // TODO: CHROME
   // open terminal/inspector
   { when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c'] },
+  { when: FIREFOX, from: [MOD3, 'k'], to: [[COMMAND, OPTION], 'i'] },
 
   // TODO: FINDER
   // new folder
