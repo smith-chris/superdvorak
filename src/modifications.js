@@ -148,6 +148,28 @@ const NOT_MS_KEYBOARD = {
   identifiers: [msKeyboardID],
 }
 
+const MBAKeyboardID = {
+  vendor_id: 1452,
+  product_id: 657,
+  description: 'MBA_KEYBOARD',
+}
+
+const MBA_KEYBOARD = {
+  type: 'device_if',
+  identifiers: [MBAKeyboardID],
+}
+
+const MBPKeyboardID = {
+  vendor_id: 1452,
+  product_id: 628,
+  description: 'MBP_KEYBOARD',
+}
+
+const MBP_KEYBOARD = {
+  type: 'device_if',
+  identifiers: [MBPKeyboardID],
+}
+
 let complex = []
 
 // UBUNTU is for pycharm eclipse keymap
@@ -167,6 +189,14 @@ let complexShort = [
   { when: MS_KEYBOARD, from: LCOMMAND, to: LOPTION },
   // `(non_us_backslash, top) and §(grave_accent_and_tilde, bottom) are swapped
   { when: MS_KEYBOARD, from: 'non_us_backslash', to: SHIFT },
+
+  // TODO: ** MBA KEYBOARD **
+
+  {
+    when: MBA_KEYBOARD,
+    from: 'non_us_backslash',
+    to: 'grave_accent_and_tilde',
+  },
 
   // TODO: ** REMOTE UBENTU **
   // To make alt key work on ubuntu you need to change it from Super_R to Alt_R
@@ -363,7 +393,7 @@ let complexShort = [
   {
     when: [ATOM, VSCODE],
     from: [MOD3, 'k'],
-    to: [CONTROL, 'non_us_backslash'],
+    to: [CONTROL, 'grave_accent_and_tilde'], // MBP: non_us_backslash
   },
   // command palette
   {
@@ -486,7 +516,11 @@ let complexShort = [
 
   // **Surroundings**
   // fixes - fix shifts not properly firing shortcuts (eg CMD+SHIFT+T)
-  { from: [COMMAND, 'grave_accent_and_tilde'], to: [COMMAND, SHIFT] },
+  {
+    when: MBP_KEYBOARD,
+    from: [COMMAND, 'grave_accent_and_tilde'],
+    to: [COMMAND, SHIFT],
+  },
   // does not work :( {when: MS_KEYBOARD, from: [ROPTION, 'non_us_backslash'], to: [COMMAND, SHIFT]},
   { from: [COMMAND, 'slash'], to: [COMMAND, SHIFT] },
 
@@ -494,7 +528,7 @@ let complexShort = [
   { from: [MOD1, 'open_bracket'], to: [COMMAND, 'e'] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
-  { from: 'grave_accent_and_tilde', to: SHIFT },
+  { when: MBP_KEYBOARD, from: 'grave_accent_and_tilde', to: SHIFT },
   ['open_bracket', ENTER],
   ['close_bracket', ENTER],
   [LCOMMAND, DELETE],
@@ -529,10 +563,12 @@ let complexShort = [
 ]
 
 let findDuplicates = array => {
-  let uniq = array.map(name => ({ count: 1, name })).reduce((a, b) => {
-    a[b.name] = (a[b.name] || 0) + b.count
-    return a
-  }, {})
+  let uniq = array
+    .map(name => ({ count: 1, name }))
+    .reduce((a, b) => {
+      a[b.name] = (a[b.name] || 0) + b.count
+      return a
+    }, {})
 
   return Object.keys(uniq).filter(a => uniq[a] > 1)
 }
