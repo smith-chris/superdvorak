@@ -251,7 +251,10 @@ let complexShort = [
 
   // just disable quit shortcut
   { from: [MOD3, 'x'], to: 'a' },
-
+  
+  // alfred
+  { from: [MOD3, 'spacebar'], to: [[COMMAND, CONTROL, OPTION], 'spacebar']  },
+  
   // * Universal programming shortcuts
 
   // comment with line comment
