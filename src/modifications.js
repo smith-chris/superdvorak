@@ -251,10 +251,10 @@ let complexShort = [
 
   // just disable quit shortcut
   { from: [MOD3, 'x'], to: 'a' },
-  
+
   // alfred
-  { from: [MOD3, 'spacebar'], to: [[COMMAND, CONTROL, OPTION], 'spacebar']  },
-  
+  { from: [MOD3, 'spacebar'], to: [[COMMAND, CONTROL, OPTION], 'spacebar'] },
+
   // * Universal programming shortcuts
 
   // comment with line comment
@@ -482,14 +482,18 @@ let complexShort = [
   { from: [MOD1, 'period'], to: [SHIFT, 'e'] },
 
   // MOD1 + RIGHT SHIFT = '`'
+  // also MOD2 + y = '`'
   { when: UBUNTU, from: [MOD1, 'slash'], to: 'grave_accent_and_tilde' },
-  { from: [MOD1, 'slash'], to: 'non_us_backslash' },
+  { from: [MOD1, 'slash'], to: 'grave_accent_and_tilde' },
+  { from: [MOD2, 'y'], to: 'grave_accent_and_tilde' },
+  // { from: 'a', to: 'grave_accent_and_tilde' },
 
   // TODO: ** MOD2 LAYER **
 
   // Ubuntu - same as MS_KB has 'non_us_backslash' and 'grave_accent_and_tilde' swapped
   { when: UBUNTU, from: [MOD2, 'y'], to: [SHIFT, 'grave_accent_and_tilde'] },
-  { from: [MOD2, 'y'], to: [SHIFT, 'non_us_backslash'] },
+  // I think this was meant to produce '~' but anyway
+  // { from: [MOD2, 'y'], to: [SHIFT, 'grave_accent_and_tilde'] },
 
   { from: [MOD2, 'n'], to: [SHIFT, '3'] },
   { from: [MOD2, 'comma'], to: 'backslash' },
