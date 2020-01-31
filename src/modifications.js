@@ -127,6 +127,11 @@ const UBUNTU = {
   bundle_identifiers: ['^com\\.parallels\\.desktop\\.console'],
 }
 
+const IOS_SIMULATOR = {
+  type: 'frontmost_application_if',
+  bundle_identifiers: ['^com\\.apple\\.iphonesimulator'],
+}
+
 const REMOTE_UBUNTU = {
   type: 'frontmost_application_if',
   bundle_identifiers: [REMOTE_DESKTOP],
@@ -351,6 +356,15 @@ let complexShort = [
   // duplicate line
   // {when: UBUNTU, from: [COMMAND, 'h'], to: [[CONTROL, OPTION], DOWN]},
 
+  // TODO: IOS_SIMULATOR
+  // open terminal/inspector
+  { when: IOS_SIMULATOR, from: [MOD3, 'k'], to: [[CONTROL, COMMAND], 'slash'] },
+  {
+    when: IOS_SIMULATOR,
+    from: [COMMAND, 'k'],
+    to: [[CONTROL, COMMAND], 'slash'],
+  },
+
   // TODO: CHROME
   // open terminal/inspector
   { when: CHROME, from: [MOD3, 'k'], to: [[OPTION, COMMAND], 'c'] },
@@ -398,6 +412,13 @@ let complexShort = [
     from: [MOD3, 'k'],
     to: [CONTROL, 'grave_accent_and_tilde'], // MBP: non_us_backslash
   },
+  // open debug console
+  {
+    when: VSCODE,
+    from: [COMMAND, 'k'],
+    to: [[COMMAND, SHIFT], 't'],
+  },
+
   // command palette
   {
     when: [ATOM, VSCODE_UBUNTU],
@@ -535,6 +556,7 @@ let complexShort = [
   { from: [MOD1, 'open_bracket'], to: [COMMAND, 'e'] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
+
   { when: MBP_KEYBOARD, from: 'grave_accent_and_tilde', to: SHIFT },
   ['open_bracket', ENTER],
   ['close_bracket', ENTER],
@@ -622,7 +644,7 @@ let transformRule = rule => {
       let duplicates = findDuplicates(newFromMod)
       if (duplicates.length > 0) {
         throw new Error(
-          `Duplicate modifiers in from: ${JSON.stringify(fromMod)}`
+          `Duplicate modifiers in from: ${JSON.stringify(fromMod)}`,
         )
       }
       fromMod = newFromMod
