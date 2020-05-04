@@ -101,6 +101,11 @@ const FINDER = {
   bundle_identifiers: ['^com\\.apple\\.finder$'],
 }
 
+const ANDROID_EMU = {
+  type: 'frontmost_application_if',
+  file_paths: ['Android/sdk/emulator'],
+}
+
 const ATOM = {
   type: 'frontmost_application_if',
   bundle_identifiers: ['^com\\.github\\.atom'],
@@ -356,13 +361,19 @@ let complexShort = [
   // duplicate line
   // {when: UBUNTU, from: [COMMAND, 'h'], to: [[CONTROL, OPTION], DOWN]},
 
-  // TODO: IOS_SIMULATOR
+  // TODO: IOS_SIMULATOR, ANDROID_EMU
   // open terminal/inspector
   { when: IOS_SIMULATOR, from: [MOD3, 'k'], to: [[CONTROL, COMMAND], 'slash'] },
   {
     when: IOS_SIMULATOR,
     from: [COMMAND, 'k'],
     to: [[CONTROL, COMMAND], 'slash'],
+  },
+  { when: ANDROID_EMU, from: [MOD3, 'k'], to: [COMMAND, 'm'] },
+  {
+    when: ANDROID_EMU,
+    from: [COMMAND, 'k'],
+    to: [COMMAND, 'm'],
   },
 
   // TODO: CHROME
@@ -463,7 +474,6 @@ let complexShort = [
   { when: VSCODE_UBUNTU, from: [COMMAND, 'q'], to: [FN, 'f12'] },
 
   // TODO: ** MOD1 LAYER **
-
   // Placeholders - no use for now
   { from: [MOD1, 's'], to: 'a' },
   { from: [MOD1, 'f'], to: 'a' },
@@ -591,18 +601,18 @@ let complexShort = [
   // {from: [LOPTION], to: ['a']},
 ]
 
-let findDuplicates = array => {
+let findDuplicates = (array) => {
   let uniq = array
-    .map(name => ({ count: 1, name }))
+    .map((name) => ({ count: 1, name }))
     .reduce((a, b) => {
       a[b.name] = (a[b.name] || 0) + b.count
       return a
     }, {})
 
-  return Object.keys(uniq).filter(a => uniq[a] > 1)
+  return Object.keys(uniq).filter((a) => uniq[a] > 1)
 }
 
-let transformRule = rule => {
+let transformRule = (rule) => {
   if (Array.isArray(rule)) {
     let [from, to] = rule
     return {
