@@ -169,15 +169,21 @@ const MBA_KEYBOARD = {
   identifiers: [MBAKeyboardID],
 }
 
-const MBPKeyboardID = {
+const MBP15KeyboardID = {
   vendor_id: 1452,
   product_id: 628,
-  description: 'MBP_KEYBOARD',
+  description: 'MBP15_KEYBOARD',
+}
+
+const MBP16KeyboardID = {
+  vendor_id: 1452,
+  product_id: 832,
+  description: 'MBP16_KEYBOARD',
 }
 
 const MBP_KEYBOARD = {
   type: 'device_if',
-  identifiers: [MBPKeyboardID],
+  identifiers: [MBP15KeyboardID, MBP16KeyboardID],
 }
 
 let complex = []
