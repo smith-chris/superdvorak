@@ -75,7 +75,10 @@ const REMOTE_DESKTOP = '^com\\.google\\.Chrome\\.canary$'
 // CONDITIONS
 const INTELLIJ = {
   type: 'frontmost_application_if',
-  bundle_identifiers: ['^com\\.jetbrains\\.'],
+  bundle_identifiers: [
+    '^com\\.jetbrains\\.',
+    '^com\\.google\\.android\\.studio$',
+  ],
 }
 
 const INTELLIJ_UBUNTU = {

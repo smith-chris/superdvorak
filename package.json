@@ -9,6 +9,6 @@
   "author": "Krzysztof Kowalski",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^1.18.9"
+    "nodemon": "^2.0.15"
   }
 }
