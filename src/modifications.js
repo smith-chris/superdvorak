@@ -184,9 +184,13 @@ const MBP16KeyboardID = {
   description: 'MBP16_KEYBOARD',
 }
 
+const MBP16M2KeyboardID = {
+  location_id: 41
+}
+
 const MBP_KEYBOARD = {
   type: 'device_if',
-  identifiers: [MBP15KeyboardID, MBP16KeyboardID],
+  identifiers: [MBP15KeyboardID, MBP16KeyboardID, MBP16M2KeyboardID],
 }
 
 let complex = []
