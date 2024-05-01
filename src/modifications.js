@@ -185,7 +185,7 @@ const MBP16KeyboardID = {
 }
 
 const MBP16M2KeyboardID = {
-  location_id: 41
+  location_id: 41,
 }
 
 const MBP_KEYBOARD = {
@@ -269,6 +269,8 @@ let complexShort = [
   // cut
   { when: REMOTE_UBUNTU, from: [CONTROL, 'n'], to: [CONTROL, 'b'] },
   { from: [COMMAND, 'n'], to: [COMMAND, 'b'] },
+  // Toothfairy connection
+  { from: [COMMAND, 'b'], to: [[COMMAND, CONTROL], 'b'] },
   // toggle fullscreen mode
   { from: [MOD2, 'x'], to: [[COMMAND, CONTROL], 'y'] },
 
