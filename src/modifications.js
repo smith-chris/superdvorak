@@ -589,6 +589,8 @@ let complexShort = [
   ['q', TAB],
   { from: TAB, to: [LSHIFT, TAB] },
   ['slash', SHIFT],
+  // Possibly should be MBP only
+  ['grave_accent_and_tilde', SHIFT],
 
   // always right shift is pressed
   [LSHIFT, SHIFT],
