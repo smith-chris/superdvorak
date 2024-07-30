@@ -213,6 +213,14 @@ let complexShort = [
   // `(non_us_backslash, top) and §(grave_accent_and_tilde, bottom) are swapped
   { when: MS_KEYBOARD, from: 'non_us_backslash', to: SHIFT },
 
+  // Possibly should be MBP only
+  // [[RCOMMAND, 'grave_accent_and_tilde'], 'a'],
+  // ['grave_accent_and_tilde', SHIFT],
+  // [
+  //   ['grave_accent_and_tilde', RCOMMAND, 'y'],
+  //   [SHIFT, RCOMMAND, 'a'],
+  // ],
+
   // TODO: ** MBA KEYBOARD **
 
   {
@@ -455,6 +463,7 @@ let complexShort = [
   { when: [ATOM, VSCODE_UBUNTU], from: [COMMAND, 'l'], to: [COMMAND, 'r'] },
 
   // TODO: VSCODE
+
   { when: VSCODE_UBUNTU, from: [COMMAND, 'k'], to: [COMMAND, 'v'] },
 
   // Extend/shrink selection
@@ -479,14 +488,27 @@ let complexShort = [
   { when: VSCODE_UBUNTU, from: [COMMAND, 'o'], to: [[COMMAND, OPTION], 'y'] },
   // Reformat code
   { when: VSCODE_UBUNTU, from: [COMMAND, 'b'], to: [[SHIFT, OPTION], 'y'] },
-  // New file
-  { when: VSCODE_UBUNTU, from: [COMMAND, 'v'], to: [COMMAND, 'm'] },
+
   { when: VSCODE_UBUNTU, from: [MOD3, 'v'], to: [[COMMAND, SHIFT], 'm'] },
   // Duplicate line
   { when: VSCODE_UBUNTU, from: [COMMAND, 'h'], to: [[OPTION, SHIFT], DOWN] },
 
   // Definition/Declaration
   { when: VSCODE_UBUNTU, from: [COMMAND, 'q'], to: [FN, 'f12'] },
+
+  // New file
+  { when: VSCODE_UBUNTU, from: [COMMAND, 'v'], to: [COMMAND, 'm'] },
+  {
+    when: VSCODE_UBUNTU,
+    from: [COMMAND, SHIFT, 'v'],
+    to: [COMMAND, SHIFT, 'm'],
+  },
+  // {
+  //   when: VSCODE_UBUNTU,
+  //   from: [COMMAND, 'v'],
+  //   to: [[COMMAND, OPTION, SHIFT], 'f4'],
+  //   // to: [COMMAND, 'a'],
+  // },
 
   // TODO: ** MOD1 LAYER **
   // Placeholders - no use for now
@@ -589,8 +611,6 @@ let complexShort = [
   ['q', TAB],
   { from: TAB, to: [LSHIFT, TAB] },
   ['slash', SHIFT],
-  // Possibly should be MBP only
-  ['grave_accent_and_tilde', SHIFT],
 
   // always right shift is pressed
   [LSHIFT, SHIFT],
