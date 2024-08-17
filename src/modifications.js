@@ -460,10 +460,6 @@ let complexShort = [
     to: [[COMMAND, SHIFT], 'r'],
   },
   // file/fuzzy search / navigate to
-  { when: [ATOM, VSCODE_UBUNTU], from: [COMMAND, 'l'], to: [COMMAND, 'r'] },
-
-  // TODO: VSCODE
-
   { when: VSCODE_UBUNTU, from: [COMMAND, 'k'], to: [COMMAND, 'v'] },
 
   // Extend/shrink selection

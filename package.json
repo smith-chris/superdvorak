@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/modifications.js",
-    "build": "node  src/modifications.js"
+    "mac": "nodemon src/modifications.js",
+    "mac:build": "node src/modifications.js"
   },
   "author": "Krzysztof Kowalski",
   "license": "ISC",
