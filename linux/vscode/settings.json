@@ -1,0 +1,11 @@
+{
+  "security.workspace.trust.untrustedFiles": "open",
+  "explorer.confirmPasteNative": false,
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 16,
+  "editor.inlineSuggest.enabled": true,
+  "workbench.sideBar.location": "right",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
