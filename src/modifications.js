@@ -117,6 +117,7 @@ const ATOM = {
 const VSCODE = {
   type: 'frontmost_application_if',
   bundle_identifiers: [
+    '^com\\.todesktop\\.230313mzl4w4u92',
     '^com\\.microsoft\\.VSCode',
     '^com\\.microsoft\\.VSCodeInsiders',
   ],
@@ -125,6 +126,7 @@ const VSCODE = {
 const VSCODE_UBUNTU = {
   type: 'frontmost_application_if',
   bundle_identifiers: [
+    '^com\\.todesktop\\.230313mzl4w4u92',
     '^com\\.microsoft\\.VSCode',
     // '^com\\.parallels\\.desktop\\.console',
   ],
@@ -198,6 +200,7 @@ let complex = []
 // UBUNTU is for pycharm eclipse keymap
 let complexShort = [
   // TODO: ** MS KEYBOARD **
+  // { when: VSCODE, from: [RCOMMAND, LCOMMAND], to: ['a'] },
 
   // Fix the annoying MSKEYBOARD bug
   { when: MS_KEYBOARD, from: [[LOPTION, RCOMMAND], LEFT], to: 'a' },
@@ -215,11 +218,19 @@ let complexShort = [
 
   // Possibly should be MBP only
   // [[RCOMMAND, 'grave_accent_and_tilde'], 'a'],
-  // ['grave_accent_and_tilde', SHIFT],
-  // [
-  //   ['grave_accent_and_tilde', RCOMMAND, 'y'],
-  //   [SHIFT, RCOMMAND, 'a'],
-  // ],
+  [
+    [RCOMMAND, 'grave_accent_and_tilde'],
+    [RCOMMAND, SHIFT],
+  ],
+  [
+    [['grave_accent_and_tilde', RCOMMAND], 'y'],
+    [[SHIFT, RCOMMAND], 'y'],
+  ],
+  [
+    ['grave_accent_and_tilde', RCOMMAND, 'y'],
+    [[SHIFT, RCOMMAND], 'y'],
+  ],
+  ['grave_accent_and_tilde', SHIFT],
 
   // TODO: ** MBA KEYBOARD **
 
@@ -304,6 +315,7 @@ let complexShort = [
   { when: NOT_MS_KEYBOARD, from: [MOD1, LCOMMAND], to: [OPTION, DELETE] },
   { when: MS_KEYBOARD, from: [MOD1, LOPTION], to: [OPTION, DELETE] },
   // delete whole line
+  { when: VSCODE, from: [COMMAND, LCOMMAND], to: [[COMMAND, SHIFT], 'v'] },
   { when: REMOTE_UBUNTU, from: [CONTROL, LCOMMAND], to: [CONTROL, 't'] },
   { when: NOT_MS_KEYBOARD, from: [COMMAND, LCOMMAND], to: [COMMAND, DELETE] },
   { when: MS_KEYBOARD, from: [COMMAND, LOPTION], to: [COMMAND, DELETE] },
@@ -444,14 +456,25 @@ let complexShort = [
   {
     when: [ATOM, VSCODE],
     from: [MOD3, 'k'],
-    to: [CONTROL, 'grave_accent_and_tilde'], // MBP: non_us_backslash
+    // ISO
+    to: [CONTROL, 'non_us_backslash'],
+    // ANSI
+    // to: [CONTROL, 'grave_accent_and_tilde'],
   },
-  // open debug console
+  // DEPRECATED: open debug console, now open terminal
   {
     when: VSCODE,
     from: [COMMAND, 'k'],
-    to: [[COMMAND, SHIFT], 't'],
+    // ISO
+    to: [CONTROL, 'non_us_backslash'],
+    // ANSI
+    // to: [CONTROL, 'grave_accent_and_tilde'],
+    // DEPRECATED: open debug console
+    // to: [[COMMAND, SHIFT], 't'],
   },
+
+  // navigate/go to file (ISO only)
+  { when: VSCODE, from: [COMMAND, 'l'], to: [[COMMAND], 'r'] },
 
   // command palette
   {
@@ -548,8 +571,12 @@ let complexShort = [
   // MOD1 + RIGHT SHIFT = '`'
   // also MOD2 + y = '`'
   { when: UBUNTU, from: [MOD1, 'slash'], to: 'grave_accent_and_tilde' },
-  { from: [MOD1, 'slash'], to: 'grave_accent_and_tilde' },
-  { from: [MOD2, 'y'], to: 'grave_accent_and_tilde' },
+  // ISO
+  { from: [MOD1, 'slash'], to: 'non_us_backslash' },
+  { from: [MOD2, 'y'], to: 'non_us_backslash' },
+  // ANSI
+  // { from: [MOD1, 'slash'], to: 'grave_accent_and_tilde' },
+  // { from: [MOD2, 'y'], to: 'grave_accent_and_tilde' },
   // { from: 'a', to: 'grave_accent_and_tilde' },
 
   // TODO: ** MOD2 LAYER **
@@ -597,6 +624,7 @@ let complexShort = [
 
   // intellij - solve problem lightbulb ??
   { from: [MOD1, 'open_bracket'], to: [COMMAND, 'e'] },
+  { from: [MOD2, 'open_bracket'], to: [COMMAND, 'p'] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
   { from: [SHIFT, 'open_bracket'], to: [SHIFT, ENTER] },
 

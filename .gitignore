@@ -2,3 +2,4 @@
 .idea
 private.pug
 yarn-error.log
+*DS_Store

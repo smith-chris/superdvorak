@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "mac": "nodemon src/modifications.js",
-    "mac:build": "node src/modifications.js"
+    "mac:build": "node src/modifications.js",
+    "work": "mkdir /Users/chris-work/.config/karabiner"
   },
   "author": "Krzysztof Kowalski",
   "license": "ISC",
